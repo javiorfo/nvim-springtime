@@ -68,4 +68,15 @@ function M:start()
     return is_interrupted
 end
 
+function M.break_when_pid_is_complete(pid)
+    return function()
+        return tonumber(vim.fn.system("[ -f '/proc/" .. pid .. "/status' ] && echo 1 || echo 0")) == 0
+    end
+end
+
+function M.job_to_run(job_string)
+    local pid = vim.fn.jobpid(vim.fn.jobstart(job_string))
+    return M.break_when_pid_is_complete(pid)
+end
+
 return M
