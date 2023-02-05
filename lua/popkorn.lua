@@ -1,7 +1,7 @@
--- ####################################################
--- # Maintainer:  Javier Orfo                         #
--- # URL:         https://github.com/javi-7/nvim-osfa #
--- ####################################################
+-- #######################################################
+-- # Maintainer:  Javier Orfo                            #
+-- # URL:         https://github.com/javio7/nvim-popkorn #
+-- #######################################################
 
 -- TODO MODULE UNDER CONSTRUCTION
 
