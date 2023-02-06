@@ -1,3 +1,3 @@
-# nvim-popkorn (WIP)
+# nvim-popcorn (WIP)
 
 Neovim plugin written in Lua
