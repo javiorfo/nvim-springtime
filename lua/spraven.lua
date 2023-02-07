@@ -1,6 +1,6 @@
 -- #######################################################
 -- # Maintainer:  Javier Orfo                            #
--- # URL:         https://github.com/javio7/nvim-popcorn #
+-- # URL:         https://github.com/javio7/nvim-spraven #
 -- #######################################################
 
 local M = {}
