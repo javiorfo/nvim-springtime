@@ -1,7 +1,7 @@
--- #######################################################
--- # Maintainer:  Javier Orfo                            #
--- # URL:         https://github.com/javio7/nvim-spraven #
--- #######################################################
+-- ##########################################################
+-- # Maintainer:  Mr. Charluils                             #
+-- # URL:         https://github.com/charluils/nvim-spraven #
+-- ##########################################################
 
 if vim.g.spraven then
   return
