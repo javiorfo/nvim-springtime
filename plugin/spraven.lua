@@ -1,6 +1,6 @@
 -- ##########################################################
--- # Maintainer:  Mr. Charluils                             #
--- # URL:         https://github.com/charluils/nvim-spraven #
+-- # Maintainer:  Mr. Charkuils                             #
+-- # URL:         https://github.com/charkuils/nvim-spraven #
 -- ##########################################################
 
 if vim.g.spraven then
