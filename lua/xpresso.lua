@@ -1,6 +1,6 @@
 -- ##########################################################
 -- # Maintainer:  Mr. Charkuils                             #
--- # URL:         https://github.com/charkuils/nvim-spraven #
+-- # URL:         https://github.com/charkuils/nvim-xpresso #
 -- ##########################################################
 
 local M = {}
