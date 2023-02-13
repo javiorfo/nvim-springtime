@@ -1,3 +1,3 @@
-# nvim-spraven (WIP)
+# nvim-xpresso (WIP)
 
 Neovim plugin written in Lua
