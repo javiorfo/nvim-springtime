@@ -1,3 +1,2 @@
 # nvim-mug (WIP)
-
-Neovim plugin written in Lua
+Neovim plugin for Java (Maven, Spring Boot, etc) written in Lua
