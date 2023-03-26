@@ -1,5 +1,5 @@
 -- ##############################################################
--- # Maintainer:  Javier Orfo                                   #
+-- # Maintainer:  System Malt                                   #
 -- # URL:         https://github.com/systemmalt/nvim-springtime #
 -- ##############################################################
 
