@@ -1,7 +1,7 @@
--- ##############################################################
--- # Maintainer:  System Malt                                   #
--- # URL:         https://github.com/systemmalt/nvim-springtime #
--- ##############################################################
+-- ############################################################
+-- # Maintainer:  Javier Orfo                                 #
+-- # URL:         https://github.com/javiorfo/nvim-springtime #
+-- ############################################################
 
 if vim.g.springtime then
   return
