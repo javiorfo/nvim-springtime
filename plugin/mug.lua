@@ -1,7 +1,7 @@
--- #####################################################
--- # Maintainer:  Javier Orfo                          #
--- # URL:         https://github.com/javiorfo/nvim-mug #
--- #####################################################
+-- ######################################################
+-- # Maintainer:  Javier Orfo                           #
+-- # URL:         https://github.com/whiskoder/nvim-mug #
+-- ######################################################
 
 if vim.g.mug then
   return
