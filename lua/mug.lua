@@ -1,6 +1,6 @@
 -- ######################################################
--- # Maintainer:  Javier Orfo                           #
--- # URL:         https://github.com/whiskoder/nvim-mug #
+-- # Maintainer:  Mr. Charkuils                         #
+-- # URL:         https://github.com/charkuils/nvim-mug #
 -- ######################################################
 
 local M = {}
