@@ -1,8 +1,3 @@
--- ######################################################
--- # Maintainer:  Mr. Charkuils                         #
--- # URL:         https://github.com/charkuils/nvim-mug #
--- ######################################################
-
 if vim.g.mug then
   return
 end
