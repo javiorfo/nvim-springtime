@@ -1,2 +1,2 @@
-# nvim-mug (WIP)
-Neovim plugin for Spring Initializr and Maven archetypes written in Lua 
+# nvim-springtime (WIP)
+Neovim plugin for Spring Initializr written in Lua 
