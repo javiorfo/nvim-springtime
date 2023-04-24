@@ -1,0 +1,9 @@
+[package]
+name = "nvim-springtime"
+version = "0.1.0"
+authors = ["Mr. Charkuils"]
+edition = "2021"
+
+[dependencies]
+neovim-lib = "0.6.0"
+# mlua = { version = "0.6", features = ["luajit", "vendored", "module", "macros", "send", "async"] }
