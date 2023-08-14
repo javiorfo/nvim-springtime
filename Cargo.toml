@@ -1,0 +1,12 @@
+[package]
+name = "nvim-springtime"
+version = "0.1.0"
+authors = ["Javier Orfo"]
+edition = "2021"
+
+[lib]
+name = "springtime"
+crate-type = ["cdylib"]
+
+[dependencies]
+nvim-oxi = { version = "0.3.0", features = ["neovim-0-9"] }
