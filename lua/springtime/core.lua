@@ -1,6 +1,6 @@
 local DEFAULT_OPTS = require'springtime'.DEFAULT_OPTS
-local checked_icon = "  "
-local unchecked_icon = "󰄱  "
+local checked_icon = "   "
+local unchecked_icon = " 󰄱  "
 
 local M = {}
 

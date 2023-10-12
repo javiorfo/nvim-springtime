@@ -11,12 +11,12 @@ M.DEFAULT_OPTS = {
         selected = 1,
         values = {
             "3.2.0 (SNAPSHOT)",
-            "3.2.0 (M2)",
-            "3.1.4 (SNAPSHOT)",
-            "3.1.3",
-            "3.0.11 (SNAPSHOT)",
-            "3.0.10",
-            "2.7.15",
+            "3.2.0 (M3)",
+            "3.1.5 (SNAPSHOT)",
+            "3.1.4",
+            "3.0.12 (SNAPSHOT)",
+            "3.0.11",
+            "2.7.16",
         }
     },
     packaging = {
@@ -24,7 +24,7 @@ M.DEFAULT_OPTS = {
     },
     java_version = {
         selected = 2,
-        values = { 20, 17, 11, 8 }
+        values = { 21, 17, 11, 8 }
     },
     project_metadata = {
         group = "com.example",
