@@ -7,6 +7,7 @@ function M.open()
         width = 50,
         height = 40,
         title = { "Springtime", "Boolean" },
+        footer = { "Press Enter proceed or ESC to close", "Comment" },
         content = core.create_content(),
         do_after = function()
             vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
