@@ -20,6 +20,19 @@ function M.open()
               end
             })
 
+            local library_list_a = function()
+                vim.fn.complete(vim.fn.col('.'), { "activemq", "actuator", "amqp", "artemis", "azure-active-directory",
+                "azure-cosmos-db", "azure-keyvault", "azure-storage", "azure-support"})
+            end
+
+            local library_list_c = function()
+                vim.fn.complete(vim.fn.col('.'), { "cache", "camel", "cloud-bus", "cloud-config-client", "cloud-config-server"})
+                return " "
+            end
+
+            vim.keymap.set('i', 'a', library_list_a, { noremap = true, silent = true, buffer = 0 })
+            vim.keymap.set('i', 'c', library_list_c, { noremap = true, silent = true, buffer = 0 })
+
 --[[             vim.api.nvim_create_autocmd({"InsertEnter"}, {
               pattern = { "<buffer>" },
               callback = function()
@@ -34,5 +47,4 @@ function M.open()
 
     popcorn:new(opts):pop()
 end
-
 return M

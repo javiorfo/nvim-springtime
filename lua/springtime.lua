@@ -8,14 +8,14 @@ M.DEFAULT_OPTS = {
         selected = 1
     },
     spring_boot = {
-        selected = 1,
+        selected = 4,
         values = {
-            "3.2.0 (SNAPSHOT)",
-            "3.2.0 (M3)",
-            "3.1.5 (SNAPSHOT)",
-            "3.1.4",
-            "3.0.12 (SNAPSHOT)",
-            "3.0.11",
+            "3.3.0 (SNAPSHOT)",
+            "3.3.0 (M1)",
+            "3.2.3 (SNAPSHOT)",
+            "3.2.2",
+            "3.1.9 (SNAPSHOT)",
+            "3.1.8",
             "2.7.16",
         }
     },
@@ -24,7 +24,7 @@ M.DEFAULT_OPTS = {
     },
     java_version = {
         selected = 2,
-        values = { 21, 17, 11, 8 }
+        values = { 21, 17, 11 }
     },
     project_metadata = {
         group = "com.example",
