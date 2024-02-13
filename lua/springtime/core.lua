@@ -1,28 +1,28 @@
 local DEFAULT_OPTS = require'springtime'.DEFAULT_OPTS
-local checked_icon = "   "
-local unchecked_icon = " 󰄱  "
+local util = require'springtime.util'
 
 local M = {}
 
 local function create_dynamic_section(selected, values)
     local result = {}
     for i, v in pairs(values) do
-        table.insert(result, { (selected == i and checked_icon or unchecked_icon) .. v })
+        table.insert(result, { (selected == i and util.CHECKED_SELECTED_ICON or util.UNCHECKED_UNSELECTED_ICON) .. v })
     end
     return result
 end
 
+-- TODO devolver content y los index de cada seccion
 function M.create_content()
     local content = {
         { "󰏖  Project", "Type" },
-        { (DEFAULT_OPTS.project.selected == 1 and checked_icon or unchecked_icon) .. "Gradle (Groovy)" },
-        { (DEFAULT_OPTS.project.selected == 2 and checked_icon or unchecked_icon) .. "Gradle (Kotlin)" },
-        { (DEFAULT_OPTS.project.selected == 3 and checked_icon or unchecked_icon) .. "Maven" },
+        { (DEFAULT_OPTS.project.selected == 1 and util.CHECKED_SELECTED_ICON or util.UNCHECKED_UNSELECTED_ICON) .. "Gradle (Groovy)" },
+        { (DEFAULT_OPTS.project.selected == 2 and util.CHECKED_SELECTED_ICON or util.UNCHECKED_UNSELECTED_ICON) .. "Gradle (Kotlin)" },
+        { (DEFAULT_OPTS.project.selected == 3 and util.CHECKED_SELECTED_ICON or util.UNCHECKED_UNSELECTED_ICON) .. "Maven" },
         { "" },
         { "  Language", "Type" },
-        { (DEFAULT_OPTS.language.selected == 1 and checked_icon or unchecked_icon) .. "Java" },
-        { (DEFAULT_OPTS.language.selected == 2 and checked_icon or unchecked_icon) .. "Kotlin" },
-        { (DEFAULT_OPTS.language.selected == 3 and checked_icon or unchecked_icon) .. "Groovy" },
+        { (DEFAULT_OPTS.language.selected == 1 and util.CHECKED_SELECTED_ICON or util.UNCHECKED_UNSELECTED_ICON) .. "Java" },
+        { (DEFAULT_OPTS.language.selected == 2 and util.CHECKED_SELECTED_ICON or util.UNCHECKED_UNSELECTED_ICON) .. "Kotlin" },
+        { (DEFAULT_OPTS.language.selected == 3 and util.CHECKED_SELECTED_ICON or util.UNCHECKED_UNSELECTED_ICON) .. "Groovy" },
         { "" },
         { "  Spring Boot", "Type" }
     }
@@ -32,8 +32,8 @@ function M.create_content()
     local packaging = {
         { "" },
         { "  Packaging", "Type" },
-        { (DEFAULT_OPTS.packaging.selected == 1 and checked_icon or unchecked_icon) .. "Jar" },
-        { (DEFAULT_OPTS.packaging.selected == 2 and checked_icon or unchecked_icon) .. "War" },
+        { (DEFAULT_OPTS.packaging.selected == 1 and util.CHECKED_SELECTED_ICON or util.UNCHECKED_UNSELECTED_ICON) .. "Jar" },
+        { (DEFAULT_OPTS.packaging.selected == 2 and util.CHECKED_SELECTED_ICON or util.UNCHECKED_UNSELECTED_ICON) .. "War" },
         { "" },
         { " Java Version", "Type" }
     }
