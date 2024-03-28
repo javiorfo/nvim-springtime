@@ -32,7 +32,7 @@ function M.open()
               pattern = { "<buffer>" },
               callback = function()
                     local pos = vim.api.nvim_win_get_cursor(0)
-                    print(pos[1], pos[2])
+--                     print(pos[1], pos[2])
                     if pos[1] < 30 and pos[2] >= 0 then
                         vim.cmd[[setl noma]]
                         vim.api.nvim_win_set_cursor(0, { pos[1], 0 })
