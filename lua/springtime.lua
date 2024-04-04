@@ -37,7 +37,7 @@ M.DEFAULT_OPTS = {
 
 -- local dir = vim.fn.getcwd() 
 -- os.execute("./bin/libraries.sh")
-print("dir " .. debug.getinfo(1).source:sub(2))
+-- print("dir " .. debug.getinfo(1).source:sub(2))
 
 function M.setup(opts)
     -- TODO validate opts
