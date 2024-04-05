@@ -11,24 +11,51 @@ local function create_dynamic_section(selected, values)
     return result
 end
 
+local function select_or_unselect(lines, line_nr)
+    for _, v in pairs(lines) do
+        if v == line_nr then
+            local selected = vim.fn.getline('.')
+            local final = tostring(selected):gsub(util.UNCHECKED_ICON, util.CHECKED_ICON)
+            vim.fn.setline(line_nr, final)
+        else
+            local unselected = vim.fn.getline(v)
+            local final = tostring(unselected):gsub(util.CHECKED_ICON, util.UNCHECKED_ICON)
+            vim.fn.setline(v, final)
+        end
+    end
+end
+
 function M.space_key_event()
     vim.cmd[[setl ma]]
     local line_nr = vim.fn.line('.')
+
     if line_nr > 1 and line_nr < 5 then
        local lines = { 2, 3, 4 }
-       for _, v in pairs(lines) do
-            if v == line_nr then
-                local selected = vim.fn.getline('.')
-                local final = tostring(selected):gsub(util.UNCHECKED_ICON, util.CHECKED_ICON)
-                vim.fn.setline(line_nr, final)
-                DEFAULT_OPTS.project.selected = line_nr - 1
-            else
-                local unselected = vim.fn.getline(v)
-                local final = tostring(unselected):gsub(util.CHECKED_ICON, util.UNCHECKED_ICON)
-                vim.fn.setline(v, final)
-            end
-       end
+       select_or_unselect(lines, line_nr)
     end
+
+    if line_nr > 6 and line_nr < 10 then
+       local lines = { 7, 8, 9 }
+       select_or_unselect(lines, line_nr)
+    end
+
+    if line_nr > 11 and line_nr < 14 then
+       local lines = { 12, 13 }
+       select_or_unselect(lines, line_nr)
+    end
+
+    if line_nr > 15 and line_nr < (M.java_version_section - 1) then
+       local lines = {}
+       for i = 15, M.java_version_section - 1 do table.insert(lines, i) end
+       select_or_unselect(lines, line_nr)
+    end
+
+    if line_nr > M.java_version_section and line_nr < (M.project_metadata_section - 1) then
+       local lines = {}
+       for i = M.java_version_section, M.project_metadata_section - 1 do table.insert(lines, i) end
+       select_or_unselect(lines, line_nr)
+    end
+
     vim.cmd[[setl noma]]
 end
 
@@ -60,6 +87,9 @@ function M.create_content()
     }
 
     local java_version = create_dynamic_section(DEFAULT_OPTS.java_version.selected, DEFAULT_OPTS.java_version.values)
+    M.java_version_section = #spring_boot + 17
+
+    M.project_metadata_section = M.java_version_section + #java_version + 2
 
     local project_metadata = {
         { "" },
