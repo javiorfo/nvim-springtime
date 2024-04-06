@@ -25,7 +25,7 @@ end
 
 local function set_help(java_version_line)
     local function set(line_nr)
-        local line = vim.fn.getline(line_nr) .. " (press space to select)"
+        local line = vim.fn.getline(line_nr) .. " (press Ctrl + Space to select)"
         vim.fn.setline(line_nr, line)
     end
 
@@ -34,7 +34,7 @@ local function set_help(java_version_line)
     set(11)
     set(15)
     set(java_version_line)
-    vim.cmd(string.format("syn match springtimeSelect '%s' | hi link springtimeSelect %s", "(press space to select)", "Comment"))
+    vim.cmd(string.format("syn match springtimeSelect '%s' | hi link springtimeSelect %s", "(press Ctrl + Space to select)", "Comment"))
 end
 
 function M.open()
@@ -52,7 +52,7 @@ function M.open()
                 pattern = { "<buffer>" },
                 callback = function()
                     local pos = vim.api.nvim_win_get_cursor(0)
-                    if pos[1] <= core.project_metadata_section and pos[2] >= 0 then
+                    if pos[1] <= core.project_metadata_section or pos[1] == (bottom - 1) or pos[1] == (bottom - 2) then
                         vim.cmd [[setl noma]]
                         vim.api.nvim_win_set_cursor(0, { pos[1], 0 })
                     else
@@ -75,7 +75,7 @@ function M.open()
                 }
             end
 
-            vim.api.nvim_buf_set_keymap(0, 'n', '<Space>', '<cmd>lua require("springtime.core").space_key_event()<CR>', { noremap = true, silent = true })
+            vim.api.nvim_buf_set_keymap(0, 'n', '<C-Space>', '<cmd>lua require("springtime.core").space_key_event()<CR>', { noremap = true, silent = true })
         end
     }
 
