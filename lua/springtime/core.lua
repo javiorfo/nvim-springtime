@@ -1,4 +1,4 @@
-local DEFAULT_OPTS = require'springtime'.DEFAULT_OPTS
+local SETTINGS = require'springtime'.SETTINGS
 local util = require'springtime.util'
 
 local M = {}
@@ -25,7 +25,7 @@ local function select_or_unselect(lines, line_nr)
     end
 end
 
-function M.space_key_event()
+function M.selection_key_event()
     vim.cmd[[setl ma]]
     local line_nr = vim.fn.line('.')
 
@@ -63,30 +63,30 @@ end
 function M.create_content()
     local content = {
         { "󰏖  Project", "Type" },
-        { (DEFAULT_OPTS.project.selected == 1 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Gradle (Groovy)" },
-        { (DEFAULT_OPTS.project.selected == 2 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Gradle (Kotlin)" },
-        { (DEFAULT_OPTS.project.selected == 3 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Maven" },
+        { (SETTINGS.spring.project.selected == 1 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Gradle (Groovy)" },
+        { (SETTINGS.spring.project.selected == 2 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Gradle (Kotlin)" },
+        { (SETTINGS.spring.project.selected == 3 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Maven" },
         { "" },
         { "  Language", "Type" },
-        { (DEFAULT_OPTS.language.selected == 1 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Java" },
-        { (DEFAULT_OPTS.language.selected == 2 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Kotlin" },
-        { (DEFAULT_OPTS.language.selected == 3 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Groovy" },
+        { (SETTINGS.spring.language.selected == 1 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Java" },
+        { (SETTINGS.spring.language.selected == 2 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Kotlin" },
+        { (SETTINGS.spring.language.selected == 3 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Groovy" },
         { "" },
         { "  Packaging", "Type" },
-        { (DEFAULT_OPTS.packaging.selected == 1 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Jar" },
-        { (DEFAULT_OPTS.packaging.selected == 2 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "War" },
+        { (SETTINGS.spring.packaging.selected == 1 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Jar" },
+        { (SETTINGS.spring.packaging.selected == 2 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "War" },
         { "" },
         { "  Spring Boot", "Type" }
     }
 
-    local spring_boot = create_dynamic_section(DEFAULT_OPTS.spring_boot.selected, DEFAULT_OPTS.spring_boot.values)
+    local spring_boot = create_dynamic_section(SETTINGS.spring.spring_boot.selected, SETTINGS.spring.spring_boot.values)
 
     local java_version_label = {
         { "" },
         { " Java Version", "Type" }
     }
 
-    local java_version = create_dynamic_section(DEFAULT_OPTS.java_version.selected, DEFAULT_OPTS.java_version.values)
+    local java_version = create_dynamic_section(SETTINGS.spring.java_version.selected, SETTINGS.spring.java_version.values)
     M.java_version_section = #spring_boot + 17
 
     M.project_metadata_section = M.java_version_section + #java_version + 2
@@ -94,10 +94,10 @@ function M.create_content()
     local project_metadata = {
         { "" },
         { " Project Metadata", "Type" },
-        { "Group        󰁕 " .. DEFAULT_OPTS.project_metadata.group },
-        { "Artifact     󰁕 " .. DEFAULT_OPTS.project_metadata.artifact },
-        { "Name         󰁕 " .. DEFAULT_OPTS.project_metadata.name },
-        { "Package Name 󰁕 " .. DEFAULT_OPTS.project_metadata.package_name },
+        { "Group        󰁕 " .. SETTINGS.spring.project_metadata.group },
+        { "Artifact     󰁕 " .. SETTINGS.spring.project_metadata.artifact },
+        { "Name         󰁕 " .. SETTINGS.spring.project_metadata.name },
+        { "Package Name 󰁕 " .. SETTINGS.spring.project_metadata.package_name },
         { "" },
         { "  Dependencies", "Type" },
         { "" }

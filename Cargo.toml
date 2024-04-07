@@ -1,0 +1,12 @@
+[package]
+name = "springtime_rs"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+nvim-oxi = { version = "0.4.2", features = [ "neovim-0-9" ] }
+curl = "0.4.46"
+serde_json = "1.0.114"

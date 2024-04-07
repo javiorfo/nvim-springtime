@@ -1,1 +1,5 @@
+# Generated libraries
 lua/springtime/libraries.lua
+
+# Rust
+/target

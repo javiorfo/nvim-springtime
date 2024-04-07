@@ -1,5 +1,6 @@
 local popcorn = require 'popcorn'
 local core = require 'springtime.core'
+local SETTINGS = require 'springtime'.SETTINGS
 local cmp = require 'cmp'
 local M = {}
 
@@ -23,31 +24,14 @@ if is_libraries_downloaded then
     cmp.register_source('spring_boot_libraries', source.new())
 end
 
-local function set_help(java_version_line)
-    local function set(line_nr)
-        local line = vim.fn.getline(line_nr) .. " (press Ctrl + Space to select)"
-        vim.fn.setline(line_nr, line)
-    end
-
-    set(1)
-    set(6)
-    set(11)
-    set(15)
-    set(java_version_line)
-    vim.cmd(string.format("syn match springtimeSelect '%s' | hi link springtimeSelect %s", "(press Ctrl + Space to select)", "Comment"))
-end
-
 function M.open()
     local opts = {
-        width = 50,
+        width = 43,
         height = bottom + 3,
         title = { "Springtime", "Boolean" },
-        footer = { "Press Enter to proceed or ESC to close", "Comment" },
+        footer = { "ENTER to generate or ESC to close", "Comment" },
         content = content,
         do_after = function()
-
-            set_help(core.java_version_section)
-
             vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
                 pattern = { "<buffer>" },
                 callback = function()
@@ -58,8 +42,24 @@ function M.open()
                     else
                         vim.cmd [[setl ma]]
                     end
+
+                    if pos[1] > core.project_metadata_section and pos[1] < (core.project_metadata_section + 5) and pos[2] < 19 then
+                        vim.api.nvim_win_set_cursor(0, { pos[1], 18 })
+                    end
                 end
             })
+
+            function Disable_backspace_on_metadata_section()
+                local line = vim.fn.line('.')
+
+                if vim.fn.col('.') < 20 and line > core.project_metadata_section and line < (core.project_metadata_section + 5) then
+                    return ''
+                else
+                    return vim.api.nvim_replace_termcodes('<bs>', true, false, true)
+                end
+            end
+
+            vim.api.nvim_buf_set_keymap(0, 'i', '<bs>', 'v:lua.Disable_backspace_on_metadata_section()', { noremap = true, expr = true })
 
             if is_libraries_downloaded then
                 cmp.setup.buffer {
@@ -75,7 +75,8 @@ function M.open()
                 }
             end
 
-            vim.api.nvim_buf_set_keymap(0, 'n', '<C-Space>', '<cmd>lua require("springtime.core").space_key_event()<CR>', { noremap = true, silent = true })
+            vim.api.nvim_buf_set_keymap(0, 'n', SETTINGS.actions.selection_keymap,
+                '<cmd>lua require("springtime.core").selection_key_event()<CR>', { noremap = true, silent = true })
         end
     }
 
