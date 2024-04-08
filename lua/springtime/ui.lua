@@ -58,8 +58,16 @@ function M.open()
                     return vim.api.nvim_replace_termcodes('<bs>', true, false, true)
                 end
             end
-
             vim.api.nvim_buf_set_keymap(0, 'i', '<bs>', 'v:lua.Disable_backspace_on_metadata_section()', { noremap = true, expr = true })
+
+            function Nothing()
+                print("nada") -- TODO change to logger
+                return ''
+            end
+            -- Disable Visual Mode
+            vim.api.nvim_buf_set_keymap(0, 'n', 'v', 'v:lua.Nothing()', { noremap = true, expr = true })
+            vim.api.nvim_buf_set_keymap(0, 'n', '<C-v>', 'v:lua.Nothing()', { noremap = true, expr = true })
+            vim.api.nvim_buf_set_keymap(0, 'n', 'V', 'v:lua.Nothing()', { noremap = true, expr = true })
 
             if is_libraries_downloaded then
                 cmp.setup.buffer {

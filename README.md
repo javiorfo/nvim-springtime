@@ -1,2 +1,2 @@
 # nvim-springtime (WIP)
-Neovim plugin for Spring Initializr written in Lua 
+Neovim plugin based on [Spring Initializr](https://start.spring.io) written in Lua and Rust
