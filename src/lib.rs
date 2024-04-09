@@ -1,6 +1,6 @@
 use curl::easy::Easy;
 use serde_json::Value;
-use std::{cell::RefCell, collections::HashMap, fs::File, io::Write};
+use std::{cell::RefCell, env, fs::File, io::Write};
 
 const SPRING_URL: &str = "https://start.spring.io";
 
@@ -27,7 +27,7 @@ fn create_project(project_name: &str, dependencies: &str) -> Result<(), String> 
     Ok(())
 }
 
-fn call_spring() -> Result<Vec<u8>, curl::Error> {
+fn call_to_spring() -> Result<Vec<u8>, curl::Error> {
     let buffer = RefCell::new(Vec::new());
     let mut handle = Easy::new();
     handle.url(SPRING_URL).unwrap();
@@ -47,13 +47,13 @@ fn call_spring() -> Result<Vec<u8>, curl::Error> {
 }
 
 // TODO validar librerias en el curl para armar el proyecto
-fn get_spring_libraries() -> Result<HashMap<String, String>, String> {
-    match call_spring() {
+fn create_spring_libraries() -> Result<(), String> {
+    match call_to_spring() {
         Ok(buffer) => {
             let value: Value = serde_json::from_slice(buffer.as_slice()).unwrap();
             let value = value.get("dependencies").map(|v| v.get("values")).unwrap();
             let values = value.unwrap().as_array().unwrap();
-            let result = values
+            let lua_list = values
                 .iter()
                 .flat_map(|v| {
                     v.get("values")
@@ -62,22 +62,44 @@ fn get_spring_libraries() -> Result<HashMap<String, String>, String> {
                         .unwrap()
                         .iter()
                         .map(|v| {
-                            (
-                                v.get("id").unwrap().to_string(),
-                                v.get("name").unwrap().to_string(),
+                            format!(
+                                r#"    {{ label = {}, insertText = {} }},"#,
+                                v.get("name").unwrap(),
+                                v.get("id").unwrap()
                             )
                         })
                 })
-                .collect::<HashMap<String, String>>();
-            Ok(result)
+                .collect::<Vec<String>>();
+
+            let mut file = File::create(format!(
+                "{}/lua/springtime/libraries.lua",
+                env::current_dir().unwrap().display()
+            ))
+            .map_err(|err| format!("Error creating libraries.lua -> {}", err))?;
+
+            writeln!(file, "return {{")
+                .map_err(|err| format!("Error writing line in file libraries.lua -> {}", err))?;
+
+            for line in lua_list {
+                writeln!(file, "{}", line).map_err(|err| {
+                    format!("Error writing line in file libraries.lua -> {}", err)
+                })?;
+            }
+
+            writeln!(file, "}}")
+                .map_err(|err| format!("Error writing line in file libraries.lua -> {}", err))?;
+
+            Ok(())
         }
-        Err(_error) => Err("".to_string()),
+        Err(error) => Err(format!("Error calling spring initializr {}", error)),
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{create_project, get_spring_libraries};
+    use std::env;
+
+    use super::{create_project, create_spring_libraries};
 
     #[test]
     fn test_create_project() {
@@ -91,8 +113,17 @@ mod tests {
     }
 
     #[test]
-    fn test_get_spring_libraries() {
-        let libraries = get_spring_libraries().unwrap();
-        libraries.iter().for_each(|(k, v)| println!("{k} {v}"));
+    fn test_create_spring_libraries() {
+        let _ = create_spring_libraries();
+    }
+
+    #[test]
+    fn files() {
+        if let Ok(current_dir) = env::current_dir() {
+            let parent_dir = current_dir;
+            println!("Absolute path two folders up: {}", parent_dir.display());
+        } else {
+            eprintln!("Failed to get current directory");
+        }
     }
 }
