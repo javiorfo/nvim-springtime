@@ -1,8 +1,21 @@
 use curl::easy::Easy;
+use nvim_oxi::{Dictionary, Function};
 use serde_json::Value;
-use std::{cell::RefCell, env, fs::File, io::Write};
+use std::{cell::RefCell, env, error::Error, fs::File, io::Write};
 
 const SPRING_URL: &str = "https://start.spring.io";
+
+#[nvim_oxi::module]
+fn springtime_rs() -> nvim_oxi::Result<Dictionary> {
+    Ok(Dictionary::from_iter([
+        ("generate_libraries", Function::from_fn(generate_libraries)),
+    ]))
+}
+
+fn generate_libraries(_: ()) -> nvim_oxi::Result<()> {
+    create_spring_libraries().unwrap();
+    Ok(())
+}
 
 fn create_project(project_name: &str, dependencies: &str) -> Result<(), String> {
     let mut easy = Easy::new();

@@ -3,3 +3,4 @@ lua/springtime/libraries.lua
 
 # Rust
 /target
+lua/springtime_rs.so
