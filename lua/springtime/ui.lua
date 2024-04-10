@@ -1,6 +1,7 @@
 local popcorn = require 'popcorn'
 local core = require 'springtime.core'
 local SETTINGS = require 'springtime'.SETTINGS
+local logger = require'springtime.logger':new("Springtime")
 local cmp = require 'cmp'
 local M = {}
 
@@ -61,7 +62,7 @@ function M.open()
             vim.api.nvim_buf_set_keymap(0, 'i', '<bs>', 'v:lua.Disable_backspace_on_metadata_section()', { noremap = true, expr = true })
 
             function Nothing()
-                print("nada") -- TODO change to logger
+                logger:info("Visual Mode is disabled in this window.")
                 return ''
             end
             -- Disable Visual Mode
