@@ -11,12 +11,12 @@ M.SETTINGS = {
         spring_boot = {
             selected = 4,
             values = {
-                "3.3.0 (SNAPSHOT)",
-                "3.3.0 (M1)",
-                "3.2.3 (SNAPSHOT)",
-                "3.2.2",
-                "3.1.9 (SNAPSHOT)",
-                "3.1.8",
+                "3.3.0.BUILD-SNAPSHOT",
+                "3.3.0.M3",
+                "3.2.5.BUILD-SNAPSHOT",
+                "3.2.4",
+                "3.1.11.BUILD-SNAPSHOT",
+                "3.1.10",
                 "2.7.18",
             }
         },
@@ -44,10 +44,6 @@ M.SETTINGS = {
         }
     }
 }
-
--- local dir = vim.fn.getcwd() 
--- os.execute("./bin/libraries.sh")
--- print("dir " .. debug.getinfo(1).source:sub(2))
 
 function M.setup(opts)
     -- TODO validate opts

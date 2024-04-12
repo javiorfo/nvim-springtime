@@ -1,6 +1,6 @@
 return {
     CHECKED_ICON = " 󰐾  ",
-    UNCHECKED_ICON = "    "
+    UNCHECKED_ICON = "    "
 }
 
 
