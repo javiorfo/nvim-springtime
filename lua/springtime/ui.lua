@@ -1,4 +1,5 @@
 local popcorn = require 'popcorn'
+local util = require 'springtime.util'
 local core = require 'springtime.core'
 local SETTINGS = require 'springtime'.SETTINGS
 local logger = require'springtime.logger':new("Springtime")
@@ -25,14 +26,31 @@ if is_libraries_downloaded then
     cmp.register_source('spring_boot_libraries', source.new())
 end
 
+local function set_help(java_version_line)
+    local help_string = " (press " .. SETTINGS.actions.selection_keymap .. " to select)"
+    local function set(line_nr)
+        local line = vim.fn.getline(line_nr) .. help_string
+        vim.fn.setline(line_nr, line)
+    end
+
+    set(1)
+    set(6)
+    set(11)
+    set(15)
+    set(java_version_line)
+    vim.cmd(string.format("syn match springtimeSelect '%s' | hi link springtimeSelect %s", help_string, "Comment"))
+end
+
 function M.open()
     local opts = {
-        width = 43,
+        width = 47,
         height = bottom + 3,
         title = { "Springtime", "Boolean" },
-        footer = { "ENTER to generate or ESC to close", "Comment" },
+        footer = { SETTINGS.actions.generate_keymap .. " to generate or ESC to close", "Comment" },
         content = content,
         do_after = function()
+            set_help(core.java_version_section)
+
             vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
                 pattern = { "<buffer>" },
                 callback = function()
@@ -86,6 +104,23 @@ function M.open()
 
             vim.api.nvim_buf_set_keymap(0, 'n', SETTINGS.actions.selection_keymap,
                 '<cmd>lua require("springtime.core").selection_key_event()<CR>', { noremap = true, silent = true })
+        end,
+        callback_keymap = SETTINGS.actions.generate_keymap,
+        callback = function()
+            local values = {}
+            for v = 2, core.project_metadata_section do
+                local line = vim.fn.getline(v)
+                local _, pos = line:find(util.CHECKED_ICON)
+                if pos then
+                    table.insert(values, line:sub(pos))
+                end
+            end
+
+            for v = (core.project_metadata_section + 1), (bottom - 3) do
+                table.insert(values, vim.fn.getline(v):sub(18))
+            end
+            table.insert(values, vim.fn.getline(bottom))
+            core.generate(values)
         end
     }
 

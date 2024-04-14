@@ -31,12 +31,14 @@ M.SETTINGS = {
             group = "com.example",
             artifact = "demo",
             name = "demo",
-            description = "Description Project From Spring Boot",
-            package_name = "com.example.demo"
+            package_name = "com.example.demo",
+            description = "Project generated with nvim-springtime",
+            version = "0.0.1-SNAPSHOT"
         }
     },
     actions = {
         selection_keymap = "<C-Space>",
+        generate_keymap = "<C-CR>",
         directory = {
             path = ".",
             decompress = true,

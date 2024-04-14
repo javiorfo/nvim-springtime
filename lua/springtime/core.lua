@@ -59,12 +59,11 @@ function M.selection_key_event()
     vim.cmd[[setl noma]]
 end
 
--- TODO devolver content y los index de cada seccion
 function M.create_content()
     local content = {
         { "󰏖  Project", "Type" },
-        { (SETTINGS.spring.project.selected == 1 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Gradle (Groovy)" },
-        { (SETTINGS.spring.project.selected == 2 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Gradle (Kotlin)" },
+        { (SETTINGS.spring.project.selected == 1 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Gradle - Groovy" },
+        { (SETTINGS.spring.project.selected == 2 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Gradle - Kotlin" },
         { (SETTINGS.spring.project.selected == 3 and util.CHECKED_ICON or util.UNCHECKED_ICON) .. "Maven" },
         { "" },
         { "  Language", "Type" },
@@ -115,6 +114,33 @@ function M.create_content()
     add_to_content(project_metadata)
 
     return content
+end
+
+local function project_to_id(value)
+    value = tostring(value)
+    if value:find("Groovy") then
+        return "gradle-project"
+    elseif value:find("Kotlin") then
+        return "gradle-project-kotlin"
+    end
+    return "maven-project"
+end
+
+function M.generate(values)
+--     1) Project
+--     2) Language
+--     3) Packaging
+--     4) Spring Boot
+--     5) Java Version
+--     6) Project Group
+--     7) Project Artifact
+--     8) Project Name
+--     9) Project Package Name
+--     10) Dependencies
+    values[1] = project_to_id(values[1])
+    values[2] = tostring(values[2]):lower()
+    values[3] = tostring(values[3]):lower()
+    print(vim.inspect(values))
 end
 
 return M

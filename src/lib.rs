@@ -1,5 +1,5 @@
 use curl::easy::Easy;
-use nvim_oxi::{Dictionary, Function};
+use nvim_oxi::{lua::Pushable, Dictionary, Function};
 use serde_json::Value;
 use std::{cell::RefCell, env, fs::File, io::Write};
 
@@ -7,9 +7,10 @@ const SPRING_URL: &str = "https://start.spring.io";
 
 #[nvim_oxi::module]
 fn springtime_rs() -> nvim_oxi::Result<Dictionary> {
-    Ok(Dictionary::from_iter([
-        ("download_libraries", Function::from_fn(download_libraries)),
-    ]))
+    Ok(Dictionary::from_iter([(
+        "download_libraries",
+        Function::from_fn(download_libraries),
+    )]))
 }
 
 fn download_libraries(_: ()) -> nvim_oxi::Result<()> {
@@ -76,9 +77,9 @@ fn create_spring_libraries() -> Result<(), String> {
                         .iter()
                         .map(|v| {
                             format!(
-                                r#"    {{ label = {}, insertText = {} }},"#,
-                                v.get("name").unwrap(),
-                                v.get("id").unwrap()
+                                r#"    {{ label = "{}", insertText = "{}," }},"#,
+                                v["name"].as_str().unwrap(),
+                                v["id"].as_str().unwrap()
                             )
                         })
                 })
