@@ -1,5 +1,5 @@
 use curl::easy::Easy;
-use nvim_oxi::{lua::Pushable, Dictionary, Function};
+use nvim_oxi::{Dictionary, Function};
 use serde_json::Value;
 use std::{cell::RefCell, env, fs::File, io::Write};
 
@@ -109,11 +109,65 @@ fn create_spring_libraries() -> Result<(), String> {
     }
 }
 
+fn create_java_version_file() -> Result<(), String> {
+    match call_to_spring() {
+        Ok(buffer) => {
+            let value: Value = serde_json::from_slice(buffer.as_slice()).unwrap();
+            let default = value
+                .get("javaVersion")
+                .map(|v| v["default"].as_str().unwrap().parse::<u64>().unwrap())
+                .unwrap();
+
+            let value = value.get("javaVersion").map(|v| v.get("values")).unwrap();
+            let values = value.unwrap().as_array().unwrap();
+
+            let mut versions = values
+                .iter()
+                .map(|v| v["id"].as_str().unwrap().parse::<u64>().unwrap())
+                .collect::<Vec<u64>>();
+            versions.sort();
+
+            let mut file = File::create(format!(
+                "{}/lua/springtime/java_version.lua",
+                env::current_dir().unwrap().display()
+            ))
+            .map_err(|err| format!("Error creating java_version.lua -> {}", err))?;
+
+            writeln!(file, "return {{")
+                .map_err(|err| format!("Error writing line in file java_version.lua -> {}", err))?;
+
+            let selected = format!(
+                r#"    selected = {},"#,
+                versions.iter().position(|&s| s == default).unwrap() + 1
+            );
+            writeln!(file, "{}", selected)
+                .map_err(|err| format!("Error writing line in file java_version.lua -> {}", err))?;
+
+            let values = format!(
+                r#"    values = {{ {} }}"#,
+                versions
+                    .iter()
+                    .map(|v| v.to_string())
+                    .collect::<Vec<String>>()
+                    .join(", ")
+            );
+            writeln!(file, "{}", values)
+                .map_err(|err| format!("Error writing line in file java_version.lua -> {}", err))?;
+
+            writeln!(file, "}}")
+                .map_err(|err| format!("Error writing line in file java_version.lua -> {}", err))?;
+
+            Ok(())
+        }
+        Err(error) => Err(format!("Error calling spring initializr {}", error)),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use std::env;
 
-    use super::{create_project, create_spring_libraries};
+    use super::{create_java_version_file, create_project, create_spring_libraries};
 
     #[test]
     fn test_create_project() {
@@ -129,6 +183,11 @@ mod tests {
     #[test]
     fn test_create_spring_libraries() {
         let _ = create_spring_libraries();
+    }
+
+    #[test]
+    fn test_create_java_version_file() {
+        let _ = create_java_version_file();
     }
 
     #[test]

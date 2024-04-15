@@ -8,6 +8,9 @@ M.SETTINGS = {
         language = {
             selected = 1
         },
+        packaging = {
+            selected = 1
+        },
         spring_boot = {
             selected = 4,
             values = {
@@ -19,9 +22,6 @@ M.SETTINGS = {
                 "3.1.10",
                 "2.7.18",
             }
-        },
-        packaging = {
-            selected = 1
         },
         java_version = {
             selected = 2,
