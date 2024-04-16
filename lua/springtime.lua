@@ -13,19 +13,9 @@ M.SETTINGS = {
         },
         spring_boot = {
             selected = 4,
-            values = {
-                "3.3.0.BUILD-SNAPSHOT",
-                "3.3.0.M3",
-                "3.2.5.BUILD-SNAPSHOT",
-                "3.2.4",
-                "3.1.11.BUILD-SNAPSHOT",
-                "3.1.10",
-                "2.7.18",
-            }
         },
         java_version = {
             selected = 2,
-            values = { 21, 17, 11 }
         },
         project_metadata = {
             group = "com.example",

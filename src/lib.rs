@@ -1,9 +1,6 @@
-use curl::easy::Easy;
 use nvim_oxi::{Dictionary, Function};
-use serde_json::Value;
-use std::{cell::RefCell, env, fs::File, io::Write};
-
-const SPRING_URL: &str = "https://start.spring.io";
+mod spring;
+use spring::luafile::create_spring_libraries;
 
 #[nvim_oxi::module]
 fn springtime_rs() -> nvim_oxi::Result<Dictionary> {
@@ -14,160 +11,17 @@ fn springtime_rs() -> nvim_oxi::Result<Dictionary> {
 }
 
 fn download_libraries(_: ()) -> nvim_oxi::Result<()> {
+    // TODO manage this error to log
     create_spring_libraries().expect("Could not download libraries!");
     Ok(())
-}
-
-fn create_project(project_name: &str, dependencies: &str) -> Result<(), String> {
-    let mut easy = Easy::new();
-
-    let mut path = SPRING_URL.to_string();
-    path.push_str("/starter.zip?");
-    path.push_str(dependencies);
-    easy.url(&path)
-        .map_err(|e| format!("Error calling spring: {e}"))?;
-    easy.get(true).unwrap();
-
-    let format = format!("Failed to create file {}", project_name);
-    let mut file = File::create(project_name).expect(&format);
-
-    easy.write_function(move |data| {
-        file.write_all(data).unwrap();
-        Ok(data.len())
-    })
-    .map_err(|e| format!("Error writing on disk {e}"))?;
-
-    easy.perform().expect("Error performing easy curl");
-    Ok(())
-}
-
-fn call_to_spring() -> Result<Vec<u8>, curl::Error> {
-    let buffer = RefCell::new(Vec::new());
-    let mut handle = Easy::new();
-    handle.url(SPRING_URL).unwrap();
-    handle.accept_encoding("application/json").unwrap();
-
-    let mut transfer = handle.transfer();
-    transfer
-        .write_function(|data| {
-            buffer.borrow_mut().extend_from_slice(data);
-            Ok(data.len())
-        })
-        .unwrap();
-    transfer.perform().unwrap();
-
-    let buffer = buffer.borrow();
-    Ok(buffer.to_vec())
-}
-
-// TODO validar librerias en el curl para armar el proyecto
-fn create_spring_libraries() -> Result<(), String> {
-    match call_to_spring() {
-        Ok(buffer) => {
-            let value: Value = serde_json::from_slice(buffer.as_slice()).unwrap();
-            let value = value.get("dependencies").map(|v| v.get("values")).unwrap();
-            let values = value.unwrap().as_array().unwrap();
-            let lua_list = values
-                .iter()
-                .flat_map(|v| {
-                    v.get("values")
-                        .unwrap()
-                        .as_array()
-                        .unwrap()
-                        .iter()
-                        .map(|v| {
-                            format!(
-                                r#"    {{ label = "{}", insertText = "{}," }},"#,
-                                v["name"].as_str().unwrap(),
-                                v["id"].as_str().unwrap()
-                            )
-                        })
-                })
-                .collect::<Vec<String>>();
-
-            let mut file = File::create(format!(
-                "{}/lua/springtime/libraries.lua",
-                env::current_dir().unwrap().display()
-            ))
-            .map_err(|err| format!("Error creating libraries.lua -> {}", err))?;
-
-            writeln!(file, "return {{")
-                .map_err(|err| format!("Error writing line in file libraries.lua -> {}", err))?;
-
-            for line in lua_list {
-                writeln!(file, "{}", line).map_err(|err| {
-                    format!("Error writing line in file libraries.lua -> {}", err)
-                })?;
-            }
-
-            writeln!(file, "}}")
-                .map_err(|err| format!("Error writing line in file libraries.lua -> {}", err))?;
-
-            Ok(())
-        }
-        Err(error) => Err(format!("Error calling spring initializr {}", error)),
-    }
-}
-
-fn create_java_version_file() -> Result<(), String> {
-    match call_to_spring() {
-        Ok(buffer) => {
-            let value: Value = serde_json::from_slice(buffer.as_slice()).unwrap();
-            let default = value
-                .get("javaVersion")
-                .map(|v| v["default"].as_str().unwrap().parse::<u64>().unwrap())
-                .unwrap();
-
-            let value = value.get("javaVersion").map(|v| v.get("values")).unwrap();
-            let values = value.unwrap().as_array().unwrap();
-
-            let mut versions = values
-                .iter()
-                .map(|v| v["id"].as_str().unwrap().parse::<u64>().unwrap())
-                .collect::<Vec<u64>>();
-            versions.sort();
-
-            let mut file = File::create(format!(
-                "{}/lua/springtime/java_version.lua",
-                env::current_dir().unwrap().display()
-            ))
-            .map_err(|err| format!("Error creating java_version.lua -> {}", err))?;
-
-            writeln!(file, "return {{")
-                .map_err(|err| format!("Error writing line in file java_version.lua -> {}", err))?;
-
-            let selected = format!(
-                r#"    selected = {},"#,
-                versions.iter().position(|&s| s == default).unwrap() + 1
-            );
-            writeln!(file, "{}", selected)
-                .map_err(|err| format!("Error writing line in file java_version.lua -> {}", err))?;
-
-            let values = format!(
-                r#"    values = {{ {} }}"#,
-                versions
-                    .iter()
-                    .map(|v| v.to_string())
-                    .collect::<Vec<String>>()
-                    .join(", ")
-            );
-            writeln!(file, "{}", values)
-                .map_err(|err| format!("Error writing line in file java_version.lua -> {}", err))?;
-
-            writeln!(file, "}}")
-                .map_err(|err| format!("Error writing line in file java_version.lua -> {}", err))?;
-
-            Ok(())
-        }
-        Err(error) => Err(format!("Error calling spring initializr {}", error)),
-    }
 }
 
 #[cfg(test)]
 mod tests {
     use std::env;
 
-    use super::{create_java_version_file, create_project, create_spring_libraries};
+    use crate::spring::{http_request::create_project, luafile::{create_java_version_file, create_spring_boot_file}};
+    use super::create_spring_libraries;
 
     #[test]
     fn test_create_project() {
@@ -188,6 +42,11 @@ mod tests {
     #[test]
     fn test_create_java_version_file() {
         let _ = create_java_version_file();
+    }
+
+    #[test]
+    fn test_create_spring_boot_file() {
+        let _ = create_spring_boot_file();
     }
 
     #[test]

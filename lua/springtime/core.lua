@@ -3,10 +3,21 @@ local util = require'springtime.util'
 
 local M = {}
 
-local function create_dynamic_section(selected, values)
+--[[ local function create_dynamic_section(selected, values)
     local result = {}
     for i, v in pairs(values) do
         table.insert(result, { (selected == i and util.CHECKED_ICON or util.UNCHECKED_ICON) .. v })
+    end
+    return result
+end ]]
+
+local function create_dynamic_section(section)
+    local config = SETTINGS.spring[section] or require('springtime.' ..section)
+    local values = config.values or require('springtime.' ..section).values
+
+    local result = {}
+    for i, v in pairs(values) do
+        table.insert(result, { (config.selected == i and util.CHECKED_ICON or util.UNCHECKED_ICON) .. v })
     end
     return result
 end
@@ -78,14 +89,16 @@ function M.create_content()
         { "  Spring Boot", "Type" }
     }
 
-    local spring_boot = create_dynamic_section(SETTINGS.spring.spring_boot.selected, SETTINGS.spring.spring_boot.values)
+    local spring_boot = create_dynamic_section("spring_boot")
+--     local spring_boot = create_dynamic_section(SETTINGS.spring.spring_boot.selected, SETTINGS.spring.spring_boot.values)
 
     local java_version_label = {
         { "" },
         { " Java Version", "Type" }
     }
 
-    local java_version = create_dynamic_section(SETTINGS.spring.java_version.selected, SETTINGS.spring.java_version.values)
+--     local java_version = create_dynamic_section(SETTINGS.spring.java_version.selected, SETTINGS.spring.java_version.values)
+    local java_version = create_dynamic_section("java_version")
     M.java_version_section = #spring_boot + 17
 
     M.project_metadata_section = M.java_version_section + #java_version + 2
