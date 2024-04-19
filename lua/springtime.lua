@@ -35,9 +35,12 @@ M.SETTINGS = {
         }
     },
     directory = {
-        path = "/home/javier/dir",
+        path = "/home/javier/dir", -- Si no existe sacarlo
         decompress = true,
         open_auto = true
+    },
+    internal = {
+        log_debug = false
     }
 }
 
@@ -91,6 +94,11 @@ function M.setup(opts)
         M.SETTINGS.directory.decompress
         M.SETTINGS.directory.open_auto = (type(directory.open_auto) == "boolean" and directory.open_auto) or
         M.SETTINGS.directory.open_auto
+    end
+
+    if opts.internal then
+        local internal = opts.internal
+        M.SETTINGS.internal.log_debug = (type(internal.log_debug) == "boolean" and internal.log_debug) or M.SETTINGS.internal.log_debug
     end
 end
 

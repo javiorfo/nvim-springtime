@@ -1,7 +1,7 @@
 use std::convert::Infallible;
 
 use nvim_oxi::{
-    Dictionary, Function, Object,
+    Dictionary, Function, Object
 };
 mod spring;
 use spring::{inputdata::SpringInputData, luafile::Luafile};
@@ -13,7 +13,7 @@ fn springtime_rs() -> nvim_oxi::Result<Dictionary> {
     let create_project = Function::from_fn(|input_data: SpringInputData| {
         println!("{:?}", input_data);
         let _ = create_project(input_data);
-        Ok::<_, Infallible>(())
+        Ok::<_, Infallible>(()) // TODO return String for messages
     });
 
     let update_luafiles = Function::from_fn(|_: ()| {

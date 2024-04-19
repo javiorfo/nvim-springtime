@@ -131,42 +131,29 @@ local function project_to_id(value)
 end
 
 function M.generate(values)
-    --     1) Project
-    --     2) Language
-    --     3) Packaging
-    --     4) Spring Boot
-    --     5) Java Version
-    --     6) Project Group
-    --     7) Project Artifact
-    --     8) Project Name
-    --     9) Project Package Name
-    --     10) Dependencies
-
     local user_input = "y"
     if SETTINGS.dialog.confirmation then
         user_input = vim.fn.input(string.format("Do you want to generate project [%s]? y/n: ", values[8]))
     end
 
     if tostring(user_input):lower() == "y" then
---[[         values[1] = project_to_id(values[1])
-        values[2] = tostring(values[2]):lower()
-        values[3] = tostring(values[3]):lower() ]]
         vim.cmd[[redraw]]
---         print(vim.inspect(values))
+--         print(vim.inspect(values)) -- TODO replace with logger
         require'springtime_rs'.create_project {
             project = project_to_id(values[1]),
             language = tostring(values[2]):lower(),
             packaging = tostring(values[3]):lower(),
             spring_boot = values[4],
             java_version = values[5],
-            project_group = values[6],
-            project_artifact = values[7],
-            project_name = values[8],
-            project_package_name = values[9],
+            project_group = values[6], -- TODO validate not empty
+            project_artifact = values[7],-- TODO validate not empty
+            project_name = values[8],-- TODO validate not empty
+            project_package_name = values[9],-- TODO validate not empty
             project_version = SETTINGS.spring.project_metadata.version,
-            dependencies = values[10], -- TODO validate dependencies
+            dependencies = values[10],
             path = SETTINGS.directory.path,
-            decompress = SETTINGS.directory.decompress
+            decompress = SETTINGS.directory.decompress,
+            log_debug = SETTINGS.internal.log_debug
         }
     else
         vim.cmd[[redraw]]

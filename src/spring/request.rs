@@ -1,16 +1,17 @@
+use crate::spring::validator::LibraryValidator;
+
 use super::{constants::SPRING_URL, errors::SpringtimeError, inputdata::SpringInputData};
 use curl::easy::Easy;
-use std::{cell::RefCell, fs::File, io::Write};
+use std::{cell::RefCell, fs::File, io::Write, path::Path};
 
 pub fn call_to_spring() -> Result<Vec<u8>, SpringtimeError> {
     let json = RefCell::new(Vec::new());
-    let mut handle = Easy::new();
-    handle.url(SPRING_URL).map_err(SpringtimeError::Curl)?;
-    handle
-        .accept_encoding("application/json")
+    let mut easy = Easy::new();
+    easy.url(SPRING_URL).map_err(SpringtimeError::Curl)?;
+    easy.accept_encoding("application/json")
         .map_err(SpringtimeError::Curl)?;
 
-    let mut transfer = handle.transfer();
+    let mut transfer = easy.transfer();
     transfer
         .write_function(|data| {
             json.borrow_mut().extend_from_slice(data);
@@ -24,8 +25,19 @@ pub fn call_to_spring() -> Result<Vec<u8>, SpringtimeError> {
 }
 
 pub fn create_project(input_data: SpringInputData) -> Result<(), SpringtimeError> {
+    Path::new(&input_data.path)
+        .try_exists()
+        .map_err(|e| SpringtimeError::Generic(format!("Path does not exists {}", e)))?;
+
+    if !&input_data.dependencies.is_empty() {
+        LibraryValidator::validate_libraries(&input_data.dependencies)?;
+    }
+
     let mut easy = Easy::new();
-    let project_name = format!("{}/{}{}", &input_data.path, &input_data.project_name, ".zip");
+    let project_name = format!(
+        "{}/{}{}",
+        &input_data.path, &input_data.project_name, ".zip"
+    );
     let string_data = String::from(&input_data);
 
     let path = format!("{}{}{}", SPRING_URL, "/starter.zip?", &string_data);
@@ -47,7 +59,7 @@ pub fn create_project(input_data: SpringInputData) -> Result<(), SpringtimeError
 
 #[cfg(test)]
 mod tests {
-    use crate::spring::{request::create_project, inputdata::SpringInputData};
+    use crate::spring::{inputdata::SpringInputData, request::create_project};
 
     #[test]
     fn test_create_project() {
@@ -64,7 +76,8 @@ mod tests {
             project_version: "0.1.0".to_string(),
             dependencies: "data-jpa,security".to_string(),
             path: "/home/javier/dir".to_string(),
-            decompress: true,
+            decompress: false,
+            log_debug: false,
         };
         println!("{}", String::from(&input));
         create_project(input).unwrap();
