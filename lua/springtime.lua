@@ -11,18 +11,17 @@ M.SETTINGS = {
         packaging = {
             selected = 1
         },
-        spring_boot = {
+--[[         spring_boot = {
             selected = 4,
         },
         java_version = {
             selected = 2,
-        },
+        }, ]]
         project_metadata = {
             group = "com.example",
             artifact = "demo",
             name = "demo",
             package_name = "com.example.demo",
-            description = "Project generated with nvim-springtime",
             version = "0.0.1-SNAPSHOT"
         }
     },
@@ -36,7 +35,7 @@ M.SETTINGS = {
         }
     },
     directory = {
-        path = ".",
+        path = "/home/javier/dir",
         decompress = true,
         open_auto = true
     }
@@ -57,14 +56,6 @@ function M.setup(opts)
             M.SETTINGS.spring.packaging.selected = (type(spring.packaging.selected) == "number" and spring.packaging.selected) or
             M.SETTINGS.spring.packaging.selected
         end
-        if spring.spring_boot then
-            M.SETTINGS.spring.spring_boot.selected = (type(spring.spring_boot.selected) == "number" and spring.spring_boot.selected) or
-            M.SETTINGS.spring.spring_boot.selected
-        end
-        if spring.java_version then
-            M.SETTINGS.spring.java_version.selected = (type(spring.java_version.selected) == "number" and spring.java_version.selected) or
-            M.SETTINGS.java_version.spring_boot.selected
-        end
 
         if spring.project_metadata then
             M.SETTINGS.spring.project_metadata.group = spring.project_metadata.group or
@@ -75,8 +66,6 @@ function M.setup(opts)
             M.SETTINGS.spring.project_metadata.name
             M.SETTINGS.spring.project_metadata.package_name = spring.project_metadata.package_name or
             M.SETTINGS.spring.project_metadata.package_name
-            M.SETTINGS.spring.project_metadata.description = spring.project_metadata.description or
-            M.SETTINGS.spring.project_metadata.description
             M.SETTINGS.spring.project_metadata.version = spring.project_metadata.version or
             M.SETTINGS.spring.project_metadata.version
         end

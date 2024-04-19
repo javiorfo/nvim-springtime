@@ -63,7 +63,7 @@ function M.selection_key_event()
 end
 
 function M.create_content()
-    local style = SETTINGS.dialog.style.section_link or "Type"
+    local style = SETTINGS.dialog.style.section_link
     local content = {
         { constants.PROJECT_SECTION, style },
         { (SETTINGS.spring.project.selected == 1 and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. constants.GRADLE_GROOVY },
@@ -121,10 +121,10 @@ function M.create_content()
 end
 
 local function project_to_id(value)
-    value = tostring(value)
-    if value:find(constants.GRADLE_GROOVY) then
+    if value == constants.GRADLE_GROOVY then
         return "gradle-project"
-    elseif value:find(constants.GRADLE_KOTLIN) then
+    end
+    if value == constants.GRADLE_KOTLIN then
         return "gradle-project-kotlin"
     end
     return "maven-project"
@@ -148,11 +148,28 @@ function M.generate(values)
     end
 
     if tostring(user_input):lower() == "y" then
-        values[1] = project_to_id(values[1])
+--[[         values[1] = project_to_id(values[1])
         values[2] = tostring(values[2]):lower()
-        values[3] = tostring(values[3]):lower()
+        values[3] = tostring(values[3]):lower() ]]
         vim.cmd[[redraw]]
-        print(vim.inspect(values))
+--         print(vim.inspect(values))
+        require'springtime_rs'.create_project {
+            project = project_to_id(values[1]),
+            language = tostring(values[2]):lower(),
+            packaging = tostring(values[3]):lower(),
+            spring_boot = values[4],
+            java_version = values[5],
+            project_group = values[6],
+            project_artifact = values[7],
+            project_name = values[8],
+            project_package_name = values[9],
+            project_version = SETTINGS.spring.project_metadata.version,
+            dependencies = values[10], -- TODO validate dependencies
+            path = SETTINGS.directory.path,
+            decompress = SETTINGS.directory.decompress
+        }
+    else
+        vim.cmd[[redraw]]
     end
 end
 

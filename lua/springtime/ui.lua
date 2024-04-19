@@ -45,7 +45,7 @@ function M.open()
     local opts = {
         width = 47,
         height = bottom + 3,
-        title = { "Springtime", SETTINGS.dialog.style.title_link or "Boolean" },
+        title = { "Springtime", SETTINGS.dialog.style.title_link },
         footer = { SETTINGS.dialog.generate_keymap .. " to generate or ESC to close", "Comment" },
         content = content,
         do_after = function()
