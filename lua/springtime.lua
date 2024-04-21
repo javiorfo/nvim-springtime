@@ -60,6 +60,23 @@ function M.setup(opts)
             M.SETTINGS.spring.packaging.selected
         end
 
+        if spring.java_version then
+            if type(spring.java_version.selected) == "number" then
+                M.SETTINGS.spring.java_version = { selected = spring.java_version.selected }
+            end
+            if type(spring.java_version.values) == "table" then
+                M.SETTINGS.spring.java_version = { values = spring.java_version.values }
+            end
+        end
+        if spring.spring_boot then
+            if type(spring.spring_boot.selected) == "number" then
+                M.SETTINGS.spring.spring_boot = { selected = spring.spring_boot.selected }
+            end
+            if type(spring.java_version.values) == "table" then
+                M.SETTINGS.spring.spring_boot = { values = spring.spring_boot.values }
+            end
+        end
+
         if spring.project_metadata then
             M.SETTINGS.spring.project_metadata.group = spring.project_metadata.group or
             M.SETTINGS.spring.project_metadata.group

@@ -8,10 +8,11 @@ local M = {}
 local function create_dynamic_section(section)
     local config = SETTINGS.spring[section] or dofile(util.lua_springtime_path .. section .. '.lua')
     local values = config.values or dofile(util.lua_springtime_path .. section .. '.lua').values
+    local selected = config.selected or dofile(util.lua_springtime_path .. section .. '.lua').selected
 
     local result = {}
     for i, v in pairs(values) do
-        table.insert(result, { (config.selected == i and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. v })
+        table.insert(result, { (selected == i and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. v })
     end
     return result
 end
