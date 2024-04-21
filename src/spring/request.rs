@@ -24,7 +24,7 @@ pub fn call_to_spring() -> Result<Vec<u8>, SpringtimeError> {
     Ok(json.to_vec())
 }
 
-pub fn create_project(input_data: SpringInputData) -> Result<(), SpringtimeError> {
+pub fn create_project(input_data: SpringInputData) -> Result<u8, SpringtimeError> {
     Path::new(&input_data.path)
         .try_exists()
         .map_err(|e| SpringtimeError::Generic(format!("Path does not exists {}", e)))?;
@@ -54,7 +54,7 @@ pub fn create_project(input_data: SpringInputData) -> Result<(), SpringtimeError
     .map_err(SpringtimeError::Curl)?;
 
     easy.perform().map_err(SpringtimeError::Curl)?;
-    Ok(())
+    Ok(0)
 }
 
 #[cfg(test)]

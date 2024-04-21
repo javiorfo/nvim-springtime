@@ -15,5 +15,5 @@ return {
     SPRING_BOOT_SECTION      = "  Spring Boot",
     JAVA_VERSION_SECTION     = " Java Version",
     PROJECT_METADATA_SECTION = " Project Metadata",
-    DEPENDENCIES_SECTION     = "  Dependencies"
+    DEPENDENCIES_SECTION     = "  Dependencies",
 }

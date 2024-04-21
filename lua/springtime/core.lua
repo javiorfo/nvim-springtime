@@ -1,11 +1,13 @@
 local SETTINGS = require 'springtime'.SETTINGS
 local constants = require 'springtime.constants'
+local spinetta = require 'spinetta'
+local util = require 'springtime.util'
 
 local M = {}
 
 local function create_dynamic_section(section)
-    local config = SETTINGS.spring[section] or require('springtime.' .. section)
-    local values = config.values or require('springtime.' .. section).values
+    local config = SETTINGS.spring[section] or dofile(util.lua_springtime_path .. section .. '.lua')
+    local values = config.values or dofile(util.lua_springtime_path .. section .. '.lua').values
 
     local result = {}
     for i, v in pairs(values) do
@@ -65,21 +67,21 @@ end
 function M.create_content()
     local style = SETTINGS.dialog.style.section_link
     local content = {
-        { constants.PROJECT_SECTION, style },
+        { constants.PROJECT_SECTION,                                                                                                style },
         { (SETTINGS.spring.project.selected == 1 and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. constants.GRADLE_GROOVY },
         { (SETTINGS.spring.project.selected == 2 and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. constants.GRADLE_KOTLIN },
         { (SETTINGS.spring.project.selected == 3 and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. constants.MAVEN },
         { "" },
-        { constants.LANGUAGE_SECTION, style },
+        { constants.LANGUAGE_SECTION,                                                                                               style },
         { (SETTINGS.spring.language.selected == 1 and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. constants.JAVA },
         { (SETTINGS.spring.language.selected == 2 and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. constants.KOTLIN },
         { (SETTINGS.spring.language.selected == 3 and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. constants.GROOVY },
         { "" },
-        { constants.PACKAGING_SECTION, style },
+        { constants.PACKAGING_SECTION,                                                                                              style },
         { (SETTINGS.spring.packaging.selected == 1 and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. constants.JAR },
         { (SETTINGS.spring.packaging.selected == 2 and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. constants.WAR },
         { "" },
-        { constants.SPRING_BOOT_SECTION, style }
+        { constants.SPRING_BOOT_SECTION,                                                                                            style }
     }
 
     local spring_boot = create_dynamic_section("spring_boot")
@@ -137,18 +139,18 @@ function M.generate(values)
     end
 
     if tostring(user_input):lower() == "y" then
-        vim.cmd[[redraw]]
---         print(vim.inspect(values)) -- TODO replace with logger
-        require'springtime_rs'.create_project {
+        vim.cmd [[redraw]]
+        --         print(vim.inspect(values)) -- TODO replace with logger
+        require 'springtime_rs'.create_project {
             project = project_to_id(values[1]),
             language = tostring(values[2]):lower(),
             packaging = tostring(values[3]):lower(),
             spring_boot = values[4],
             java_version = values[5],
-            project_group = values[6], -- TODO validate not empty
-            project_artifact = values[7],-- TODO validate not empty
-            project_name = values[8],-- TODO validate not empty
-            project_package_name = values[9],-- TODO validate not empty
+            project_group = values[6],        -- TODO validate not empty
+            project_artifact = values[7],     -- TODO validate not empty
+            project_name = values[8],         -- TODO validate not empty
+            project_package_name = values[9], -- TODO validate not empty
             project_version = SETTINGS.spring.project_metadata.version,
             dependencies = values[10],
             path = SETTINGS.directory.path,
@@ -156,8 +158,64 @@ function M.generate(values)
             log_debug = SETTINGS.internal.log_debug
         }
     else
-        vim.cmd[[redraw]]
+        vim.cmd [[redraw]]
     end
+end
+
+function M.build()
+    local root_path = util.lua_springtime_path:gsub("/lua/springtime", "")
+    local script = string.format(
+    "%sinstall.sh %s 2> >( while read line; do echo \"[ERROR][$(date '+%%D %%T')]: ${line}\"; done >> %s)", root_path,
+        root_path, util.springtime_log_file)
+    local is_ok = false
+    local spinner = spinetta:new {
+        main_msg = "  Springtime   Building plugin. Please wait ",
+        on_success = function()
+            if is_ok then
+                M.update()
+            else
+                util.logger:warn("An error ocurred during building. Check the Logs for further information.")
+            end
+        end,
+        on_interrupted = function()
+            vim.cmd("redraw")
+            local msg = "Call interrupted!"
+            util.logger:info(msg)
+        end
+    }
+
+    local function job_to_run(job_string)
+        local pid = vim.fn.jobpid(vim.fn.jobstart(job_string, {
+            on_exit = function(_, status)
+                if status == 0 then
+                    is_ok = true
+                end
+            end
+        }))
+        return spinetta.break_when_pid_is_complete(pid)
+    end
+
+    spinner:start(job_to_run(script))
+end
+
+function M.update()
+    local spinner = spinetta:new {
+        main_msg = "  Springtime   Updating from https://start.spring.io ",
+        on_success = function()
+            if require 'springtime_rs'.update(util.lua_springtime_path) == 0 then
+                util.logger:info("Done! Springtime is ready to be used!")
+            else
+                util.logger:warn("An error ocurred during update. Check the Logs for further information.")
+            end
+        end,
+        on_interrupted = function()
+            vim.cmd("redraw")
+            local msg = "Call interrupted!"
+            util.logger:info(msg)
+        end
+    }
+
+    spinner:start(spinetta.job_to_run("sleep 1"))
 end
 
 return M

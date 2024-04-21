@@ -2,13 +2,13 @@ local popcorn = require 'popcorn'
 local constants = require 'springtime.constants'
 local core = require 'springtime.core'
 local SETTINGS = require 'springtime'.SETTINGS
-local logger = require'springtime.logger':new("Springtime")
+local util = require 'springtime.util'
 local cmp = require 'cmp'
 local M = {}
 
 local content = core.create_content()
 local bottom = core.project_metadata_section + 7
-local is_libraries_downloaded, libraries = pcall(require, 'springtime.libraries')
+local is_libraries_downloaded, libraries = pcall(dofile, util.lua_springtime_path .. 'libraries.lua')
 local source = {}
 
 if is_libraries_downloaded then
@@ -42,6 +42,12 @@ local function set_help(java_version_line)
 end
 
 function M.open()
+    if not util.check_if_file_exists('java_version.lua') or not util.check_if_file_exists('spring_boot.lua')
+        or not util.check_if_file_exists('springtime_rs.so', util.lua_springtime_path:gsub("/springtime", "")) then
+        util.logger:warn(":SpringtimeBuild must be executed to build this plugin before using it.")
+        return
+    end
+
     local opts = {
         width = 47,
         height = bottom + 3,
@@ -77,12 +83,15 @@ function M.open()
                     return vim.api.nvim_replace_termcodes('<bs>', true, false, true)
                 end
             end
-            vim.api.nvim_buf_set_keymap(0, 'i', '<bs>', 'v:lua.Disable_backspace_on_metadata_section()', { noremap = true, expr = true })
+
+            vim.api.nvim_buf_set_keymap(0, 'i', '<bs>', 'v:lua.Disable_backspace_on_metadata_section()',
+                { noremap = true, expr = true })
 
             function Nothing()
-                logger:info("Visual Mode is disabled in this window.")
+                util.logger:info("Visual Mode is disabled in this window.")
                 return ''
             end
+
             -- Disable Visual Mode
             vim.api.nvim_buf_set_keymap(0, 'n', 'v', 'v:lua.Nothing()', { noremap = true, expr = true })
             vim.api.nvim_buf_set_keymap(0, 'n', '<C-v>', 'v:lua.Nothing()', { noremap = true, expr = true })
