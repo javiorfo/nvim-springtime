@@ -1,6 +1,9 @@
 use crate::spring::{
-    constants::SPRING_URL, curl::inputdata::SpringInputData, errors::SpringtimeError,
-    lua::validator::Validator, zip::decompressor::decompress,
+    constants::SPRING_URL,
+    curl::inputdata::SpringInputData,
+    errors::SpringtimeError,
+    lua::{logger::Logger, utils::LogLevel, validator::Validator},
+    zip::decompressor::decompress,
 };
 
 use curl::easy::Easy;
@@ -9,7 +12,14 @@ use std::{cell::RefCell, fs::File, io::Write, path::Path};
 pub fn call_to_spring() -> Result<Vec<u8>, SpringtimeError> {
     let json = RefCell::new(Vec::new());
     let mut easy = Easy::new();
-    easy.url(SPRING_URL).map_err(SpringtimeError::Curl)?;
+    easy.url(SPRING_URL).map_err(|e| {
+        Logger::log(
+            LogLevel::Error,
+            &format!("Error calling Spring: {}", e.description()),
+        );
+        SpringtimeError::Curl(e)
+    })?;
+
     easy.accept_encoding("application/json")
         .map_err(SpringtimeError::Curl)?;
 
@@ -23,6 +33,7 @@ pub fn call_to_spring() -> Result<Vec<u8>, SpringtimeError> {
     transfer.perform().map_err(SpringtimeError::Curl)?;
 
     let json = json.borrow();
+    Logger::log(LogLevel::Debug, "Call to Spring succeeded!");
     Ok(json.to_vec())
 }
 
