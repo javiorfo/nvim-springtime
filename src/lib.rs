@@ -9,13 +9,15 @@ use spring::{
 
 #[nvim_oxi::module]
 fn springtime_rs() -> nvim_oxi::Result<Dictionary> {
-    let create_project = Function::from_fn(|input_data: SpringInputData| {
-        let result = create_project(input_data).unwrap_or(1);
-        Ok::<u8, Infallible>(result)
-    });
+    let create_project =
+        Function::from_fn(
+            |input_data: SpringInputData| match create_project(input_data) {
+                Ok(result) => Ok::<String, Infallible>(result),
+                Err(result) => Ok::<String, Infallible>(result),
+            },
+        );
 
     let update_luafiles = Function::from_fn(|_: ()| {
-        // TODO manage this error to log
         let result = Luafile::new().create_luafiles().unwrap_or(1);
         Ok::<u8, Infallible>(result)
     });

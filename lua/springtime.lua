@@ -11,12 +11,6 @@ M.SETTINGS = {
         packaging = {
             selected = 1
         },
---[[         spring_boot = {
-            selected = 4,
-        },
-        java_version = {
-            selected = 2,
-        }, ]]
         project_metadata = {
             group = "com.example",
             artifact = "demo",
@@ -40,7 +34,7 @@ M.SETTINGS = {
         open_auto = true
     },
     internal = {
-        log_debug = false
+        log_debug = true
     }
 }
 
@@ -117,6 +111,8 @@ function M.setup(opts)
         local internal = opts.internal
         M.SETTINGS.internal.log_debug = (type(internal.log_debug) == "boolean" and internal.log_debug) or M.SETTINGS.internal.log_debug
     end
+
+    require 'springtime.util'.logger:debug("Setup options: " .. vim.inspect(M.SETTINGS))
 end
 
 return M

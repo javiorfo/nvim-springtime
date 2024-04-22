@@ -19,4 +19,8 @@ function M.check_if_file_exists(file, path)
     end
 end
 
+function M.trim(s)
+  return (s:gsub("^%s*(.-)%s*$", "%1"))
+end
+
 return M

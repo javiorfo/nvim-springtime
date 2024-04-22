@@ -20,7 +20,6 @@ pub struct SpringInputData {
     pub dependencies: String,
     pub path: String,
     pub decompress: bool,
-    pub log_debug: bool,
 }
 
 impl From<&SpringInputData> for String {

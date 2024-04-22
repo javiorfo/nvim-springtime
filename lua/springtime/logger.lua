@@ -26,4 +26,15 @@ function M:info(msg)
     logger(msg)(vim.log.levels.INFO)
 end
 
+function M:debug(msg)
+    local util = require 'springtime.util'
+    if require'springtime'.SETTINGS.internal.log_debug then
+        local file = io.open(util.springtime_log_file, "a")
+        if file then
+            file:write(string.format("%s %s\n", util.debug_header, msg))
+            file:close()
+        end
+    end
+end
+
 return M

@@ -120,6 +120,7 @@ function M.create_content()
     add_to_content(java_version)
     add_to_content(project_metadata)
 
+    util.logger:debug("Popcorn content: " .. vim.inspect(content))
     return content
 end
 
@@ -141,23 +142,26 @@ function M.generate(values)
 
     if tostring(user_input):lower() == "y" then
         vim.cmd [[redraw]]
-        --         print(vim.inspect(values)) -- TODO replace with logger
-        require 'springtime_rs'.create_project {
+        util.logger:debug("Values to generate project: ", vim.inspect(values))
+
+        local input = {
             project = project_to_id(values[1]),
             language = tostring(values[2]):lower(),
             packaging = tostring(values[3]):lower(),
             spring_boot = values[4],
             java_version = values[5],
-            project_group = values[6],        -- TODO validate not empty
-            project_artifact = values[7],     -- TODO validate not empty
-            project_name = values[8],         -- TODO validate not empty
-            project_package_name = values[9], -- TODO validate not empty
+            project_group = util.trim(values[6]),
+            project_artifact = util.trim(values[7]),
+            project_name = util.trim(values[8]),
+            project_package_name = util.trim(values[9]),
             project_version = SETTINGS.spring.project_metadata.version,
             dependencies = values[10],
             path = SETTINGS.directory.path,
             decompress = SETTINGS.directory.decompress,
-            log_debug = SETTINGS.internal.log_debug
         }
+
+        local result = require 'springtime_rs'.create_project(input)
+        util.logger:info(result)
     else
         vim.cmd [[redraw]]
     end
@@ -166,7 +170,7 @@ end
 function M.build()
     local root_path = util.lua_springtime_path:gsub("/lua/springtime", "")
     local script = string.format(
-    "%sinstall.sh %s 2> >( while read line; do echo \"[ERROR][$(date '+%%D %%T')]: ${line}\"; done >> %s)", root_path,
+    "%sinstall.sh %s 2> >( while read line; do echo \"[ERROR][$(date '+%%m/%%d/%%Y %%T')]: ${line}\"; done >> %s)", root_path,
         root_path, util.springtime_log_file)
     local is_ok = false
     local spinner = spinetta:new {
@@ -204,7 +208,7 @@ function M.update()
         main_msg = "  Springtime   Updating from https://start.spring.io ",
         on_success = function()
             if require 'springtime_rs'.update() == 0 then
-                util.logger:error("Done! Springtime is ready to be used!")
+                util.logger:info("Done! Springtime is ready to be used!")
             else
                 util.logger:warn("An error ocurred during update. Check the Logs for further information.")
             end

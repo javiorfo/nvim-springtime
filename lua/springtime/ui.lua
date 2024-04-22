@@ -24,6 +24,8 @@ if is_libraries_downloaded then
         end
     end
     cmp.register_source('spring_boot_libraries', source.new())
+else
+    util.logger:debug('libraries.lua does not exist. Not uploaded in popcorn')
 end
 
 local function set_help(java_version_line)

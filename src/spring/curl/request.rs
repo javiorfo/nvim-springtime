@@ -1,6 +1,6 @@
 use crate::spring::{
     constants::SPRING_URL, curl::inputdata::SpringInputData, errors::SpringtimeError,
-    lua::validator::LibraryValidator,
+    lua::validator::Validator, zip::decompressor::decompress,
 };
 
 use curl::easy::Easy;
@@ -26,14 +26,16 @@ pub fn call_to_spring() -> Result<Vec<u8>, SpringtimeError> {
     Ok(json.to_vec())
 }
 
-pub fn create_project(input_data: SpringInputData) -> Result<u8, SpringtimeError> {
+pub fn create_project(input_data: SpringInputData) -> Result<String, String> {
     Path::new(&input_data.path)
         .try_exists()
-        .map_err(|e| SpringtimeError::Generic(format!("Path does not exists {}", e)))?;
+        .map_err(|e| format!("Path does not exists {}", e))?;
 
     if !input_data.dependencies.is_empty() {
-        LibraryValidator::validate_libraries(&input_data.dependencies)?;
+        Validator::validate_libraries(&input_data.dependencies).map_err(|e| e.to_string())?;
     }
+
+    Validator::validate_project_properties(&input_data).map_err(|e| e.to_string())?;
 
     let mut easy = Easy::new();
     let project_name = format!(
@@ -43,45 +45,25 @@ pub fn create_project(input_data: SpringInputData) -> Result<u8, SpringtimeError
     let string_data = String::from(&input_data);
 
     let path = format!("{}{}{}", SPRING_URL, "/starter.zip?", &string_data);
-    println!("{}", path);
-    easy.url(&path).map_err(SpringtimeError::Curl)?;
-    easy.get(true).map_err(SpringtimeError::Curl)?;
+    easy.url(&path).map_err(|e| e.to_string())?;
+    easy.get(true).map_err(|e| e.to_string())?;
 
-    let mut file = File::create(project_name).map_err(SpringtimeError::Io)?;
+    let mut file = File::create(&project_name).map_err(|e| e.to_string())?;
 
     easy.write_function(move |data| {
         file.write_all(data).unwrap();
         Ok(data.len())
     })
-    .map_err(SpringtimeError::Curl)?;
+    .map_err(|e| e.to_string())?;
 
-    easy.perform().map_err(SpringtimeError::Curl)?;
-    Ok(0)
-}
+    easy.perform().map_err(|e| e.to_string())?;
 
-#[cfg(test)]
-mod tests {
-    use crate::spring::{curl::inputdata::SpringInputData, curl::request::create_project};
-
-    #[test]
-    fn test_create_project() {
-        let input = SpringInputData {
-            project: "gradle-project".to_string(),
-            language: "java".to_string(),
-            packaging: "jar".to_string(),
-            spring_boot: "3.2.5".to_string(),
-            java_version: "21".to_string(),
-            project_group: "com.orfosys".to_string(),
-            project_artifact: "orfosys".to_string(),
-            project_name: "orfosys".to_string(),
-            project_package_name: "com.orfosys.papa".to_string(),
-            project_version: "0.1.0".to_string(),
-            dependencies: "data-jpa,security".to_string(),
-            path: "/home/javier/dir".to_string(),
-            decompress: false,
-            log_debug: false,
-        };
-        println!("{}", String::from(&input));
-        create_project(input).unwrap();
+    if input_data.decompress {
+        let dest_directory = &format!("{}/{}/", &input_data.path, &input_data.project_name);
+        decompress(&project_name, dest_directory).map_err(|e| e.to_string())?;
     }
+    Ok(format!(
+        "Project {} generated correctly",
+        input_data.project_name
+    ))
 }
