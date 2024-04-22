@@ -1,6 +1,8 @@
-use crate::spring::validator::LibraryValidator;
+use crate::spring::{
+    constants::SPRING_URL, curl::inputdata::SpringInputData, errors::SpringtimeError,
+    lua::validator::LibraryValidator,
+};
 
-use super::{constants::SPRING_URL, errors::SpringtimeError, inputdata::SpringInputData};
 use curl::easy::Easy;
 use std::{cell::RefCell, fs::File, io::Write, path::Path};
 
@@ -29,7 +31,7 @@ pub fn create_project(input_data: SpringInputData) -> Result<u8, SpringtimeError
         .try_exists()
         .map_err(|e| SpringtimeError::Generic(format!("Path does not exists {}", e)))?;
 
-    if !&input_data.dependencies.is_empty() {
+    if !input_data.dependencies.is_empty() {
         LibraryValidator::validate_libraries(&input_data.dependencies)?;
     }
 
@@ -59,7 +61,7 @@ pub fn create_project(input_data: SpringInputData) -> Result<u8, SpringtimeError
 
 #[cfg(test)]
 mod tests {
-    use crate::spring::{inputdata::SpringInputData, request::create_project};
+    use crate::spring::{curl::inputdata::SpringInputData, curl::request::create_project};
 
     #[test]
     fn test_create_project() {

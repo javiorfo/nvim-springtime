@@ -1,12 +1,28 @@
-use super::{constants::*, errors::SpringtimeError, request::call_to_spring};
+use crate::spring::{
+    constants::{
+        JAVA_VERSION, JAVA_VERSION_LUAFILE, LIBRARIES_LUAFILE, SPRING_BOOT_VERSION,
+        SPRING_BOOT_VERSION_LUAFILE, SPRING_URL,
+    },
+    curl::request::call_to_spring,
+    errors::SpringtimeError,
+};
 use serde_json::Value;
 use std::{fs::File, io::Write};
 
-pub struct Luafile(Option<Vec<u8>>, String);
+use super::utils::LuaUtils;
+
+#[derive(Debug)]
+pub struct Luafile {
+    values: Option<Vec<u8>>,
+    path: Option<String>,
+}
 
 impl Luafile {
-    pub fn new(path: String) -> Self {
-        Self(call_to_spring().ok(), path)
+    pub fn new() -> Self {
+        Self {
+            values: call_to_spring().ok(),
+            path: LuaUtils::get_springtime_plugin_path().ok(),
+        }
     }
 
     pub fn create_luafiles(&self) -> Result<u8, SpringtimeError> {
@@ -17,7 +33,7 @@ impl Luafile {
     }
 
     fn create_libraries_luafile(&self) -> Result<(), SpringtimeError> {
-        match &self.0 {
+        match &self.values {
             Some(json) => {
                 let value: Value =
                     serde_json::from_slice(json.as_slice()).map_err(SpringtimeError::SerdeJson)?;
@@ -41,9 +57,8 @@ impl Luafile {
                     })
                     .collect::<Vec<String>>();
 
-                let mut file = self
-                    .create_luafile(LIBRARIES_LUAFILE)
-                    .map_err(SpringtimeError::Io)?;
+                let mut file = self.create_luafile(LIBRARIES_LUAFILE)?;
+
                 writeln!(file, "return {{").map_err(SpringtimeError::Io)?;
 
                 for line in lua_list {
@@ -62,7 +77,7 @@ impl Luafile {
     }
 
     fn create_java_version_luafile(&self) -> Result<(), SpringtimeError> {
-        match &self.0 {
+        match &self.values {
             Some(json) => {
                 let value: Value = serde_json::from_slice(json.as_slice()).unwrap();
                 let default = value
@@ -78,9 +93,7 @@ impl Luafile {
                     .map(|v| v["id"].as_str().unwrap().parse::<u64>().unwrap())
                     .collect::<Vec<u64>>();
 
-                let mut file = self
-                    .create_luafile(JAVA_VERSION_LUAFILE)
-                    .map_err(SpringtimeError::Io)?;
+                let mut file = self.create_luafile(JAVA_VERSION_LUAFILE)?;
 
                 let luafile = format!(
                     r#"return {{ selected = {}, values = {{ {} }} }}"#,
@@ -105,7 +118,7 @@ impl Luafile {
     }
 
     fn create_spring_boot_luafile(&self) -> Result<(), SpringtimeError> {
-        match &self.0 {
+        match &self.values {
             Some(json) => {
                 let value: Value = serde_json::from_slice(json.as_slice()).unwrap();
                 let default = value
@@ -124,9 +137,7 @@ impl Luafile {
                     .map(|v| v["id"].as_str().unwrap().to_string())
                     .collect::<Vec<String>>();
 
-                let mut file = self
-                    .create_luafile(SPRING_BOOT_VERSION_LUAFILE)
-                    .map_err(SpringtimeError::Io)?;
+                let mut file = self.create_luafile(SPRING_BOOT_VERSION_LUAFILE)?;
 
                 let luafile = format!(
                     r#"return {{ selected = {}, values = {{ {} }} }}"#,
@@ -150,12 +161,11 @@ impl Luafile {
         }
     }
 
-    fn create_luafile(&self, luafile: &str) -> Result<File, std::io::Error> {
-        let file = File::create(format!(
-            "{}{}",
-            self.1,
-            luafile
+    fn create_luafile(&self, luafile: &str) -> Result<File, SpringtimeError> {
+        let path = self.path.as_ref().ok_or(SpringtimeError::Generic(
+            "Springtime path is empty!".to_string(),
         ))?;
+        let file = File::create(format!("{}{}", path, luafile)).map_err(SpringtimeError::Io)?;
         Ok(file)
     }
 }

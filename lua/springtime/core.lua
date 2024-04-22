@@ -203,8 +203,8 @@ function M.update()
     local spinner = spinetta:new {
         main_msg = "  Springtime   Updating from https://start.spring.io ",
         on_success = function()
-            if require 'springtime_rs'.update(util.lua_springtime_path) == 0 then
-                util.logger:info("Done! Springtime is ready to be used!")
+            if require 'springtime_rs'.update() == 0 then
+                util.logger:error("Done! Springtime is ready to be used!")
             else
                 util.logger:warn("An error ocurred during update. Check the Logs for further information.")
             end
@@ -217,6 +217,10 @@ function M.update()
     }
 
     spinner:start(spinetta.job_to_run("sleep 1"))
+end
+
+function M.show_logs()
+    vim.cmd(string.format("vsp %s | normal G", util.springtime_log_file))
 end
 
 return M
