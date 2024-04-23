@@ -175,7 +175,6 @@ function M.generate(values)
 end
 
 function M.build()
-    util.logger:info("Tester")
     local root_path = util.lua_springtime_path:gsub("/lua/springtime", "")
     local script = string.format(
     "%sinstall.sh %s 2> >( while read line; do echo \"[ERROR][$(date '+%%m/%%d/%%Y %%T')]: ${line}\"; done >> %s)", root_path,
