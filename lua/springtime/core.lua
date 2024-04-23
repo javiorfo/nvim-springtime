@@ -142,7 +142,7 @@ function M.generate(values)
 
     if tostring(user_input):lower() == "y" then
         vim.cmd [[redraw]]
-        util.logger:debug("Values to generate project: ", vim.inspect(values))
+        util.logger:debug("Values to generate project: " .. vim.inspect(values))
 
         local input = {
             project = project_to_id(values[1]),
@@ -160,7 +160,15 @@ function M.generate(values)
             decompress = SETTINGS.directory.decompress,
         }
 
-        local ok, message = require 'springtime_rs'.create_project(input)
+        local rust_module = util.dinamcally_get_rust_module()
+
+        if not rust_module then
+            util.logger:error("Internal error. Check the logs")
+            util.logger:debug("Could not load springtime_rs.so to execute update")
+            return
+        end
+
+        local ok, message = rust_module.create_project(input)
         if ok then
             util.logger:info(message)
             if SETTINGS.directory.open_auto then
@@ -168,6 +176,7 @@ function M.generate(values)
             end
         else
             util.logger:error(message)
+--             vim.cmd("normal " .. vim.api.nvim_replace_termcodes('<esc>', true, true, true))
         end
     else
         vim.cmd [[redraw]]
@@ -184,8 +193,7 @@ function M.build()
         main_msg = "  Springtime   Building plugin. Please wait ",
         on_success = function()
             if is_ok then
-                util.logger:info("Done! Springtime is ready to be used!")
---                 M.update()
+                M.update()
             else
                 util.logger:error("An error ocurred during building. Check the Logs for further information.")
             end
@@ -215,7 +223,15 @@ function M.update()
     local spinner = spinetta:new {
         main_msg = "  Springtime   Updating from https://start.spring.io ",
         on_success = function()
-            if require 'springtime_rs'.update() == 0 then
+            local rust_module = util.dinamcally_get_rust_module()
+
+            if not rust_module then
+                util.logger:error("Internal error. Check the logs")
+                util.logger:debug("Could not load springtime_rs.so to execute update")
+               return
+            end
+
+            if rust_module.update() == 0 then
                 util.logger:info("Done! Springtime is ready to be used!")
             else
                 util.logger:error("An error ocurred during update. Check the Logs for further information.")
