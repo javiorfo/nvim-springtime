@@ -190,7 +190,9 @@ function M.build()
         root_path, util.springtime_log_file)
     local is_ok = false
     local spinner = spinetta:new {
-        main_msg = "  Springtime   Building plugin. Please wait ",
+        main_msg = "  Springtime   ",
+        spinner = util.spinner,
+        speed_ms = 4500,
         on_success = function()
             if is_ok then
                 M.update()
