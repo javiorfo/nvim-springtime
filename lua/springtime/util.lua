@@ -38,7 +38,7 @@ M.spinner = {
     '[2/5] Please wait...',
     '[3/5] Just wait a little more...',
     '[4/5] Almost...',
-    '[5/5] Thanks for be patient...',
+    '[5/5] Thanks for being patient...',
     'Finishing  ......  ',
     'Finishing . .....  ',
     'Finishing .. ....  ',
