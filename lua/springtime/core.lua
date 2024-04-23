@@ -175,6 +175,7 @@ function M.generate(values)
 end
 
 function M.build()
+    util.logger:info("Tester")
     local root_path = util.lua_springtime_path:gsub("/lua/springtime", "")
     local script = string.format(
     "%sinstall.sh %s 2> >( while read line; do echo \"[ERROR][$(date '+%%m/%%d/%%Y %%T')]: ${line}\"; done >> %s)", root_path,
@@ -184,7 +185,8 @@ function M.build()
         main_msg = "  Springtime   Building plugin. Please wait ",
         on_success = function()
             if is_ok then
-                M.update()
+                util.logger:info("Done! Springtime is ready to be used!")
+--                 M.update()
             else
                 util.logger:error("An error ocurred during building. Check the Logs for further information.")
             end
