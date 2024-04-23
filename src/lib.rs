@@ -12,8 +12,8 @@ fn springtime_rs() -> nvim_oxi::Result<Dictionary> {
     let create_project =
         Function::from_fn(
             |input_data: SpringInputData| match create_project(input_data) {
-                Ok(result) => Ok::<String, Infallible>(result),
-                Err(result) => Ok::<String, Infallible>(result),
+                Ok(message) => Ok::<(bool, String), Infallible>((true, message)),
+                Err(message) => Ok::<(bool, String), Infallible>((false, message)),
             },
         );
 

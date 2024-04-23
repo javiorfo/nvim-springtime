@@ -28,7 +28,7 @@ impl From<&SpringInputData> for String {
                 value.project, value.language, value.packaging,
                 value.spring_boot, value.java_version, value.project_group,
                 value.project_artifact, value.project_name, value.project_package_name,
-                value.project_version, value.dependencies)
+                value.project_version, value.dependencies.trim_end_matches(','))
     }
 }
 

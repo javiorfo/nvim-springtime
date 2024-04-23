@@ -22,7 +22,6 @@ impl From<LogLevel> for &str {
     }
 }
 
-// Check if log_debug is set to true
 static mut IS_LOG_ENABLED: Option<bool> = None;
 static mut LOG_FILE_PATH: Option<&'static str> = None;
 

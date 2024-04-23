@@ -29,7 +29,7 @@ M.SETTINGS = {
         }
     },
     directory = {
-        path = "/home/javier/dir", -- Si no existe sacarlo
+        path = vim.fn.expand("%:p:h"),
         decompress = true,
         open_auto = true
     },

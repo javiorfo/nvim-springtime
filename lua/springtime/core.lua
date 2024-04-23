@@ -160,8 +160,15 @@ function M.generate(values)
             decompress = SETTINGS.directory.decompress,
         }
 
-        local result = require 'springtime_rs'.create_project(input)
-        util.logger:info(result)
+        local ok, message = require 'springtime_rs'.create_project(input)
+        if ok then
+            util.logger:info(message)
+            if SETTINGS.directory.open_auto then
+                vim.cmd(string.format("e %s/%s", SETTINGS.directory.path, input.project_name))
+            end
+        else
+            util.logger:error(message)
+        end
     else
         vim.cmd [[redraw]]
     end
@@ -179,7 +186,7 @@ function M.build()
             if is_ok then
                 M.update()
             else
-                util.logger:warn("An error ocurred during building. Check the Logs for further information.")
+                util.logger:error("An error ocurred during building. Check the Logs for further information.")
             end
         end,
         on_interrupted = function()
@@ -210,7 +217,7 @@ function M.update()
             if require 'springtime_rs'.update() == 0 then
                 util.logger:info("Done! Springtime is ready to be used!")
             else
-                util.logger:warn("An error ocurred during update. Check the Logs for further information.")
+                util.logger:error("An error ocurred during update. Check the Logs for further information.")
             end
         end,
         on_interrupted = function()
@@ -225,6 +232,16 @@ end
 
 function M.show_logs()
     vim.cmd(string.format("vsp %s | normal G", util.springtime_log_file))
+end
+
+function M.open()
+    if not util.check_if_file_exists('java_version.lua') or not util.check_if_file_exists('spring_boot.lua')
+        or not util.check_if_file_exists('springtime_rs.so', util.lua_springtime_path:gsub("/springtime", "")) then
+        util.logger:warn(":SpringtimeBuild must be executed to build this plugin before using it.")
+        return
+    else
+        require'springtime.ui'.open()
+    end
 end
 
 return M

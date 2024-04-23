@@ -74,7 +74,7 @@ pub fn create_project(input_data: SpringInputData) -> Result<String, String> {
         decompress(&project_name, dest_directory).map_err(|e| e.to_string())?;
     }
     Ok(format!(
-        "Project {} generated correctly",
-        input_data.project_name
+        "Project '{}' generated correctly in workspace '{}'",
+        input_data.project_name, input_data.path
     ))
 }

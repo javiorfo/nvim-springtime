@@ -44,12 +44,6 @@ local function set_help(java_version_line)
 end
 
 function M.open()
-    if not util.check_if_file_exists('java_version.lua') or not util.check_if_file_exists('spring_boot.lua')
-        or not util.check_if_file_exists('springtime_rs.so', util.lua_springtime_path:gsub("/springtime", "")) then
-        util.logger:warn(":SpringtimeBuild must be executed to build this plugin before using it.")
-        return
-    end
-
     local opts = {
         width = 47,
         height = bottom + 3,
@@ -132,6 +126,12 @@ function M.open()
             end
             table.insert(values, vim.fn.getline(bottom))
             core.generate(values)
+
+            if not SETTINGS.directory.open_auto then
+                return function()
+                    vim.cmd("quit")
+                end
+            end
         end
     }
 
