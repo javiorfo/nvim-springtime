@@ -34,18 +34,18 @@ function M.dinamcally_get_rust_module()
 end
 
 M.spinner = {
-    '[1/5] Building plugin. Do not interrupt this process...',
-    '[2/5] Please wait...',
-    '[3/5] Just wait a little more...',
-    '[4/5] Almost...',
-    '[5/5] Thanks for being patient...',
-    'Finishing  ......  ',
-    'Finishing . .....  ',
-    'Finishing .. ....  ',
-    'Finishing ... ...  ',
-    'Finishing .... ..  ',
-    'Finishing ..... .  ',
-    'Finishing ......   ',
+    '󰪞  Building plugin (could take several seconds). Do not interrupt this process...',
+    '󰪟  Please wait...',
+    '󰪠  Just wait a little more...',
+    '󰪡  Thanks for being patient...',
+    '󰪢  Almost...',
+    '󰪣  Finishing  ......  ',
+    '󰪤  Finishing . .....  ',
+    '󰪥  Finishing .. ....  ',
+    '󰪥  Finishing ... ...  ',
+    '󰪥  Finishing .... ..  ',
+    '󰪥  Finishing ..... .  ',
+    '󰪥  Finishing ......   ',
 }
 
 return M

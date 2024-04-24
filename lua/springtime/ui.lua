@@ -127,7 +127,7 @@ function M.open()
             table.insert(values, vim.fn.getline(bottom))
             core.generate(values)
 
-            if not SETTINGS.directory.open_auto then
+            if not SETTINGS.workspace.open_auto then
                 return function()
                     vim.cmd("quit")
                 end

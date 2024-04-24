@@ -18,7 +18,7 @@ pub struct SpringInputData {
     pub project_package_name: String,
     pub project_version: String,
     pub dependencies: String,
-    pub path: String,
+    pub workspace: String,
     pub decompress: bool,
 }
 

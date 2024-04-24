@@ -156,14 +156,14 @@ function M.generate(values)
             project_package_name = util.trim(values[9]),
             project_version = SETTINGS.spring.project_metadata.version,
             dependencies = values[10],
-            path = SETTINGS.directory.path,
-            decompress = SETTINGS.directory.decompress,
+            workspace = SETTINGS.workspace.path,
+            decompress = SETTINGS.workspace.decompress,
         }
 
         local rust_module = util.dinamcally_get_rust_module()
 
         if not rust_module then
-            util.logger:error("Internal error. Check the logs")
+            util.logger:error("  Internal error. Check the logs")
             util.logger:debug("Could not load springtime_rs.so to execute update")
             return
         end
@@ -171,12 +171,11 @@ function M.generate(values)
         local ok, message = rust_module.create_project(input)
         if ok then
             util.logger:info(message)
-            if SETTINGS.directory.open_auto then
-                vim.cmd(string.format("e %s/%s", SETTINGS.directory.path, input.project_name))
+            if SETTINGS.workspace.open_auto then
+                vim.cmd(string.format("e %s/%s", SETTINGS.workspace.path, input.project_name))
             end
         else
             util.logger:error(message)
---             vim.cmd("normal " .. vim.api.nvim_replace_termcodes('<esc>', true, true, true))
         end
     else
         vim.cmd [[redraw]]
@@ -197,7 +196,7 @@ function M.build()
             if is_ok then
                 M.update()
             else
-                util.logger:error("An error ocurred during building. Check the Logs for further information.")
+                util.logger:error("  An error ocurred during building. Check the Logs for further information.")
             end
         end,
         on_interrupted = function()
@@ -228,15 +227,15 @@ function M.update()
             local rust_module = util.dinamcally_get_rust_module()
 
             if not rust_module then
-                util.logger:error("Internal error. Check the logs")
+                util.logger:error("  Internal error. Check the logs")
                 util.logger:debug("Could not load springtime_rs.so to execute update")
                return
             end
 
             if rust_module.update() == 0 then
-                util.logger:info("Done! Springtime is ready to be used!")
+                util.logger:info("  Springtime is ready to be used!")
             else
-                util.logger:error("An error ocurred during update. Check the Logs for further information.")
+                util.logger:error("  An error ocurred during update. Check the Logs for further information.")
             end
         end,
         on_interrupted = function()

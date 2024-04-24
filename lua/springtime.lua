@@ -28,13 +28,13 @@ M.SETTINGS = {
             section_link = "Type"
         }
     },
-    directory = {
+    workspace = {
         path = vim.fn.expand("%:p:h"),
         decompress = true,
         open_auto = true
     },
     internal = {
-        log_debug = true
+        log_debug = false
     }
 }
 
@@ -98,13 +98,13 @@ function M.setup(opts)
         end
     end
 
-    if opts.directory then
-        local directory = opts.directory
-        M.SETTINGS.directory.path = directory.path or M.SETTINGS.directory.path
-        M.SETTINGS.directory.decompress = (type(directory.decompress) == "boolean" and directory.decompress) or
-        M.SETTINGS.directory.decompress
-        M.SETTINGS.directory.open_auto = (type(directory.open_auto) == "boolean" and directory.open_auto) or
-        M.SETTINGS.directory.open_auto
+    if opts.workspace then
+        local workspace = opts.workspace
+        M.SETTINGS.workspace.path = workspace.path or M.SETTINGS.workspace.path
+        M.SETTINGS.workspace.decompress = (type(workspace.decompress) == "boolean" and workspace.decompress) or
+        M.SETTINGS.workspace.decompress
+        M.SETTINGS.workspace.open_auto = (type(workspace.open_auto) == "boolean" and workspace.open_auto) or
+        M.SETTINGS.workspace.open_auto
     end
 
     if opts.internal then
