@@ -134,17 +134,17 @@ impl Luafile {
 
                 let versions = values
                     .iter()
-                    .map(|v| v["id"].as_str().unwrap().to_string())
+                    .map(|v| v["name"].as_str().unwrap().to_string())
                     .collect::<Vec<String>>();
 
                 let mut file = self.create_luafile(SPRING_BOOT_VERSION_LUAFILE)?;
 
                 let luafile = format!(
                     r#"return {{ selected = {}, values = {{ {} }} }}"#,
-                    (versions.iter().position(|s| s == default).unwrap() + 1),
+                    (versions.iter().position(|s| *s == default.replace(".RELEASE", "")).unwrap() + 1),
                     versions
                         .iter()
-                        .map(|v| format!(r#""{}""#, v.replace(".RELEASE", "")))
+                        .map(|v| format!(r#""{}""#, v.replace(" (", "-").replace(')', "")))
                         .collect::<Vec<String>>()
                         .join(", ")
                 );
