@@ -7,6 +7,10 @@
 - Extra dependencies must be installed required by rust crates, like: `libcurl, libclang, cmake` 
 - This plugin has been developed on and for `Linux` following open source philosophy.
 
+
+<img src="https://github.com/javiorfo/img/blob/master/nvim-springtime/springtime.png?raw=true" alt="springtime" />
+
+
 ## Installation
 `Packer`
 ```lua

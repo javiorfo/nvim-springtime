@@ -1,15 +1,8 @@
-use crate::spring::{
-    constants::{
-        JAVA_VERSION, JAVA_VERSION_LUAFILE, LIBRARIES_LUAFILE, SPRING_BOOT_VERSION,
-        SPRING_BOOT_VERSION_LUAFILE, SPRING_URL,
-    },
-    curl::request::call_to_spring,
-    errors::SpringtimeError,
-};
+use crate::spring::{constants::*, curl::request::call_to_spring, errors::SpringtimeError};
 use serde_json::Value;
 use std::{fs::File, io::Write};
 
-use super::utils::LuaUtils;
+use super::{logger::Logger::*, utils::LuaUtils};
 
 #[derive(Debug)]
 pub struct Luafile {
@@ -29,6 +22,7 @@ impl Luafile {
         self.create_libraries_luafile()?;
         self.create_java_version_luafile()?;
         self.create_spring_boot_luafile()?;
+        Debug.log("Lua files created without errors.");
         Ok(0)
     }
 
@@ -59,20 +53,30 @@ impl Luafile {
 
                 let mut file = self.create_luafile(LIBRARIES_LUAFILE)?;
 
-                writeln!(file, "return {{").map_err(SpringtimeError::Io)?;
+                writeln!(file, "return {{").map_err(|e| {
+                    Error.log(&format!("Error writing file {:?}: {}", file, e));
+                    SpringtimeError::Io(e)
+                })?;
 
                 for line in lua_list {
-                    writeln!(file, "{}", line).map_err(SpringtimeError::Io)?;
+                    writeln!(file, "{}", line).map_err(|e| {
+                        Error.log(&format!("Error writing file {:?}: {}", file, e));
+                        SpringtimeError::Io(e)
+                    })?;
                 }
 
-                writeln!(file, "}}").map_err(SpringtimeError::Io)?;
+                writeln!(file, "}}").map_err(|e| {
+                    Error.log(&format!("Error writing file {:?}: {}", file, e));
+                    SpringtimeError::Io(e)
+                })?;
 
                 Ok(())
             }
-            _ => Err(SpringtimeError::Generic(format!(
-                "JSON is empty. Error calling {}",
-                SPRING_URL
-            ))),
+            _ => {
+                let message = format!("JSON is empty. Error calling {}", SPRING_URL);
+                Error.log(&message);
+                Err(SpringtimeError::Generic(message))
+            }
         }
     }
 
@@ -97,7 +101,7 @@ impl Luafile {
 
                 let luafile = format!(
                     r#"return {{ selected = {}, values = {{ {} }} }}"#,
-                    (versions.iter().position(|&s| s == default).unwrap() + 1),
+                    (versions.iter().position(|&s| s == default).unwrap_or(0) + 1),
                     versions
                         .iter()
                         .map(|v| v.to_string())
@@ -105,15 +109,18 @@ impl Luafile {
                         .join(", ")
                 );
 
-                file.write_all(luafile.as_bytes())
-                    .map_err(SpringtimeError::Io)?;
+                file.write_all(luafile.as_bytes()).map_err(|e| {
+                    Error.log(&format!("Error writing file {:?}: {}", file, e));
+                    SpringtimeError::Io(e)
+                })?;
 
                 Ok(())
             }
-            _ => Err(SpringtimeError::Generic(format!(
-                "JSON is empty. Error calling {}",
-                SPRING_URL
-            ))),
+            _ => {
+                let message = format!("JSON is empty. Error calling {}", SPRING_URL);
+                Error.log(&message);
+                Err(SpringtimeError::Generic(message))
+            }
         }
     }
 
@@ -141,7 +148,11 @@ impl Luafile {
 
                 let luafile = format!(
                     r#"return {{ selected = {}, values = {{ {} }} }}"#,
-                    (versions.iter().position(|s| *s == default.replace(".RELEASE", "")).unwrap() + 1),
+                    (versions
+                        .iter()
+                        .position(|s| *s == default.replace(".RELEASE", ""))
+                        .unwrap_or(0)
+                        + 1),
                     versions
                         .iter()
                         .map(|v| format!(r#""{}""#, v.replace(" (", "-").replace(')', "")))
@@ -149,15 +160,18 @@ impl Luafile {
                         .join(", ")
                 );
 
-                file.write_all(luafile.as_bytes())
-                    .map_err(SpringtimeError::Io)?;
+                file.write_all(luafile.as_bytes()).map_err(|e| {
+                    Error.log(&format!("Error writing file {:?}: {}", file, e));
+                    SpringtimeError::Io(e)
+                })?;
 
                 Ok(())
             }
-            _ => Err(SpringtimeError::Generic(format!(
-                "JSON is empty. Error calling {}",
-                SPRING_URL
-            ))),
+            _ => {
+                let message = format!("JSON is empty. Error calling {}", SPRING_URL);
+                Error.log(&message);
+                Err(SpringtimeError::Generic(message))
+            }
         }
     }
 
@@ -165,7 +179,13 @@ impl Luafile {
         let path = self.path.as_ref().ok_or(SpringtimeError::Generic(
             "Springtime path is empty!".to_string(),
         ))?;
-        let file = File::create(format!("{}{}", path, luafile)).map_err(SpringtimeError::Io)?;
+
+        let file = File::create(format!("{}{}", path, luafile)).map_err(|e| {
+            Error.log(&format!("Error writing file {}/{}: {}", path, luafile, e));
+            SpringtimeError::Io(e)
+        })?;
+
+        Debug.log(&format!("File {}/{} created correctly.", path, luafile));
         Ok(file)
     }
 }

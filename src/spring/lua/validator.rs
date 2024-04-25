@@ -2,17 +2,20 @@ use nvim_oxi::mlua::Table;
 
 use crate::spring::{curl::inputdata::SpringInputData, errors::SpringtimeError};
 
-use super::utils::{LuaUtils, Module, Variable};
+use super::{logger::Logger::*, utils::{LuaUtils, Module, Variable}};
 
 pub struct Validator;
 
 impl Validator {
     pub fn validate_libraries(libraries: &str) -> Result<(), SpringtimeError> {
         let values: Vec<&str> = libraries.split(',').filter(|&s| !s.is_empty()).collect();
+        Debug.log(&format!("Dependencies selected: {:?}", values));
+
         let lua_table = LuaUtils::get_lua_module::<Table>(
             Module("require'springtime.libraries'"),
             Variable("libraries"),
         )?;
+
         for v in values.iter() {
             Self::validate_one_library(v, &lua_table)?;
         }
@@ -27,12 +30,12 @@ impl Validator {
             .any(|value| value == format!("{},", library));
 
         if v {
+            Debug.log(&format!("Library {} exists.", library));
             Ok(())
         } else {
-            Err(SpringtimeError::Generic(format!(
-                "Library {} does not exist in Spring Boot official libraries.",
-                library
-            )))
+            let message = format!("Library {} does not exist in Spring Boot official libraries.", library);
+            Error.log(&message);
+            Err(SpringtimeError::Generic(message))
         }
     }
 
