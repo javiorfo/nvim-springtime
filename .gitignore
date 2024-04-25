@@ -1,4 +1,4 @@
-# Generated libraries
+# Generated lua files
 lua/springtime/libraries.lua
 lua/springtime/java_version.lua
 lua/springtime/spring_boot.lua

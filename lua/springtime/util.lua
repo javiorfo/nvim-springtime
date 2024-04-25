@@ -46,6 +46,11 @@ M.spinner = {
     '󰪥  Finishing .... ..  ',
     '󰪥  Finishing ..... .  ',
     '󰪥  Finishing ......   ',
+    '󰪥  Finishing ......   ',
+    '󰪥  Finishing ......   ',
+    '󰪥  Finishing ......   ',
+    '󰪥  Finishing ......   ',
+    '󰪥  Finishing ......   ',
 }
 
 return M

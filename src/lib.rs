@@ -4,20 +4,21 @@ use nvim_oxi::{Dictionary, Function, Object};
 mod spring;
 use spring::{
     curl::{inputdata::SpringInputData, request::create_project},
-    lua::luafile::Luafile,
+    lua::{logger::Logger::Debug, luafile::Luafile},
 };
 
 #[nvim_oxi::module]
 fn springtime_rs() -> nvim_oxi::Result<Dictionary> {
-    let create_project =
-        Function::from_fn(
-            |input_data: SpringInputData| match create_project(input_data) {
-                Ok(message) => Ok::<(bool, String), Infallible>((true, message)),
-                Err(message) => Ok::<(bool, String), Infallible>((false, message)),
-            },
-        );
+    let create_project = Function::from_fn(|input_data: SpringInputData| {
+        Debug.log("Calling Rust update function");
+        match create_project(input_data) {
+            Ok(message) => Ok::<(bool, String), Infallible>((true, message)),
+            Err(message) => Ok::<(bool, String), Infallible>((false, message)),
+        }
+    });
 
     let update_luafiles = Function::from_fn(|_: ()| {
+        Debug.log("Calling Rust update function");
         let result = Luafile::new().create_luafiles().unwrap_or(1);
         Ok::<u8, Infallible>(result)
     });
