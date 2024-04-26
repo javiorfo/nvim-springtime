@@ -120,7 +120,6 @@ function M.create_content()
     add_to_content(java_version)
     add_to_content(project_metadata)
 
-    util.logger:debug("Popcorn content: " .. vim.inspect(content))
     return content
 end
 
