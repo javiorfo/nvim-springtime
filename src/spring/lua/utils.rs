@@ -24,15 +24,9 @@ impl LuaUtils {
         let lua = lua();
         lua.load(format!("{} = {}", variable.0, module.0))
             .exec()
-            .map_err(|e| {
-                Error.log(&format!("Lua {} does not exist: {}", module.0, e));
-                SpringtimeError::Generic(format!("Lua {} does not exist", module.0))
-            })?;
+            .map_err(|_| SpringtimeError::Generic(format!("Lua {} does not exist", module.0)))?;
 
         let lua_module: V = lua.globals().get(variable.0).unwrap();
-        Debug.log(&format!("Lua module {} loaded", module.0));
         Ok(lua_module)
     }
-
-    
 }
