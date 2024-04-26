@@ -83,5 +83,19 @@ mod validator_tests {
         };
         let result = Validator::validate_project_properties(&input_data);
         assert!(result.is_err());
+
+        let input_data = SpringInputData {
+            project: "gradle-project".to_string(),
+            language: "java".to_string(),
+            packaging: "jar".to_string(),
+            spring_boot: "3.2.5".to_string(),
+            java_version: "21".to_string(),
+            project_group: "com".to_string(),
+            project_artifact: "demo".to_string(),
+            project_name: "demo".to_string(),
+            ..input_data
+        };
+        let result = Validator::validate_project_properties(&input_data);
+        assert!(result.is_ok());
     }
 }
