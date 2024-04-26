@@ -1,5 +1,5 @@
 use crate::spring::{
-    constants::SPRING_URL,
+    constants::{SpringtimeResult, SPRING_URL},
     curl::inputdata::SpringInputData,
     errors::SpringtimeError,
     lua::{logger::Logger::*, validator::Validator},
@@ -9,7 +9,7 @@ use crate::spring::{
 use curl::easy::Easy;
 use std::{cell::RefCell, fs::File, io::Write, path::Path};
 
-pub fn call_to_spring() -> Result<Vec<u8>, SpringtimeError> {
+pub fn call_to_spring() -> SpringtimeResult<Vec<u8>> {
     let json = RefCell::new(Vec::new());
     let mut easy = Easy::new();
     easy.url(SPRING_URL).map_err(|e| {

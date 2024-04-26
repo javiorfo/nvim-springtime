@@ -1,13 +1,13 @@
 use nvim_oxi::mlua::Table;
 
-use crate::spring::{curl::inputdata::SpringInputData, errors::SpringtimeError};
+use crate::spring::{constants::SpringtimeResult, curl::inputdata::SpringInputData, errors::SpringtimeError};
 
 use super::{logger::Logger::*, utils::{LuaUtils, Module, Variable}};
 
 pub struct Validator;
 
 impl Validator {
-    pub fn validate_libraries(libraries: &str) -> Result<(), SpringtimeError> {
+    pub fn validate_libraries(libraries: &str) -> SpringtimeResult {
         let values: Vec<&str> = libraries.split(',').filter(|&s| !s.is_empty()).collect();
         Debug.log(&format!("Dependencies selected: {:?}", values));
 
@@ -22,7 +22,7 @@ impl Validator {
         Ok(())
     }
 
-    fn validate_one_library(library: &str, lua_table: &Table) -> Result<(), SpringtimeError> {
+    fn validate_one_library(library: &str, lua_table: &Table) -> SpringtimeResult {
         let v = lua_table
             .clone()
             .pairs::<String, Table>()
@@ -41,7 +41,7 @@ impl Validator {
 
     pub fn validate_project_properties(
         input_data: &SpringInputData,
-    ) -> Result<(), SpringtimeError> {
+    ) -> SpringtimeResult {
         let message = |section: &str| format!("Project Metadata {} must not be empty", section);
 
         if input_data.project_group.is_empty() {

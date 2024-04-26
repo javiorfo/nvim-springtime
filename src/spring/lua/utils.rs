@@ -1,6 +1,6 @@
 use nvim_oxi::mlua::{lua, FromLua};
 
-use crate::spring::{errors::SpringtimeError, lua::logger::Logger::*};
+use crate::spring::{constants::SpringtimeResult, errors::SpringtimeError, lua::logger::Logger::*};
 
 pub struct LuaUtils;
 
@@ -8,7 +8,7 @@ pub struct Module<'a>(pub &'a str);
 pub struct Variable<'a>(pub &'a str);
 
 impl LuaUtils {
-    pub fn get_springtime_plugin_path() -> Result<String, SpringtimeError> {
+    pub fn get_springtime_plugin_path() -> SpringtimeResult<String> {
         let lua_path = Self::get_lua_module(
             Module("require'springtime.util'.lua_springtime_path"),
             Variable("path"),
@@ -20,7 +20,7 @@ impl LuaUtils {
     pub fn get_lua_module<'lua, V: FromLua<'lua>>(
         module: Module,
         variable: Variable,
-    ) -> Result<V, SpringtimeError> {
+    ) -> SpringtimeResult<V> {
         let lua = lua();
         lua.load(format!("{} = {}", variable.0, module.0))
             .exec()
