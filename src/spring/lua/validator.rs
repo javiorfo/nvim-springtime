@@ -57,3 +57,31 @@ impl Validator {
         }
     }
 }
+
+#[cfg(test)]
+mod validator_tests {
+    use crate::spring::curl::inputdata::SpringInputData;
+
+    use super::Validator;
+
+    #[test]
+    fn test_project_properties() {
+        let input_data = SpringInputData {
+            project: "gradle-project".to_string(),
+            language: "java".to_string(),
+            packaging: "jar".to_string(),
+            spring_boot: "3.2.5".to_string(),
+            java_version: "21".to_string(),
+            project_group: "com".to_string(),
+            project_artifact: "demo".to_string(),
+            project_name: "".to_string(),
+            project_package_name: "com.example.demo".to_string(),
+            project_version: "0.1.0".to_string(),
+            dependencies: "data-jpa,".to_string(),
+            workspace: "".to_string(),
+            decompress: false,
+        };
+        let result = Validator::validate_project_properties(&input_data);
+        assert!(result.is_err());
+    }
+}

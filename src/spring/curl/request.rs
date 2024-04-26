@@ -87,3 +87,14 @@ pub fn create_project(input_data: SpringInputData) -> Result<String, String> {
         input_data.project_name, input_data.workspace
     ))
 }
+
+#[cfg(test)]
+mod request_tests {
+    use super::call_to_spring;
+
+    #[test]
+    fn test_call_to_spring() {
+        let result = call_to_spring();
+        assert!(result.is_ok());
+    }
+}

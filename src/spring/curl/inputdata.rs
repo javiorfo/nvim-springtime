@@ -44,3 +44,29 @@ impl Poppable for SpringInputData {
         Self::from_object(obj).map_err(lua::Error::pop_error_from_err::<Self, _>)
     }
 }
+
+#[cfg(test)]
+mod inputdata_tests {
+    use super::SpringInputData;
+
+    #[test]
+    fn test_inputdata() {
+        let input_data = SpringInputData {
+            project: "gradle-project".to_string(),
+            language: "java".to_string(),
+            packaging: "jar".to_string(),
+            spring_boot: "3.2.5".to_string(),
+            java_version: "21".to_string(),
+            project_group: "com".to_string(),
+            project_artifact: "demo".to_string(),
+            project_name: "demo".to_string(),
+            project_package_name: "com.example.demo".to_string(),
+            project_version: "0.1.0".to_string(),
+            dependencies: "data-jpa,".to_string(),
+            workspace: "".to_string(),
+            decompress: false,
+        };
+        let input_data = String::from(&input_data);
+        assert_eq!(input_data.len(), 183);
+    }
+}
