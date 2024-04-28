@@ -122,8 +122,8 @@ use {
 - **Consider:**
     - *Visual Mode* is disabled.
     - *Insert Mode* is only enable to edit **Project Metadata** and **Dependencies** 
-    - To select radio buttons use default *<C-Space>* in *Normal mode* (or configure it like opts above)
-    - To generate a project use default *<C-CR>* in *Normal mode* (or configure it like opts above)
+    - To select radio buttons use default **Ctrl + Space** in *Normal mode* (or configure it like opts above)
+    - To generate a project use default **Ctrl + CR** in *Normal mode* (or configure it like opts above)
     - **Dependencies** has autocomplete libraries
 
 <img src="https://github.com/javiorfo/img/blob/master/nvim-springtime/springtime.gif?raw=true" alt="springtime" />
