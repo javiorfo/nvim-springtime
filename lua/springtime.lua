@@ -59,7 +59,11 @@ function M.setup(opts)
                 M.SETTINGS.spring.java_version = { selected = spring.java_version.selected }
             end
             if type(spring.java_version.values) == "table" then
-                M.SETTINGS.spring.java_version = { values = spring.java_version.values }
+                if M.SETTINGS.spring.java_version and M.SETTINGS.spring.java_version.selected then
+                    M.SETTINGS.spring.java_version.values = spring.java_version.values
+                else
+                    M.SETTINGS.spring.java_version = { values = spring.java_version.values }
+                end
             end
         end
         if spring.spring_boot then
@@ -67,7 +71,11 @@ function M.setup(opts)
                 M.SETTINGS.spring.spring_boot = { selected = spring.spring_boot.selected }
             end
             if type(spring.java_version.values) == "table" then
-                M.SETTINGS.spring.spring_boot = { values = spring.spring_boot.values }
+                if M.SETTINGS.spring.spring_boot and M.SETTINGS.spring.spring_boot.selected then
+                    M.SETTINGS.spring.spring_boot.values = spring.spring_boot.values
+                else
+                    M.SETTINGS.spring.spring_boot = { values = spring.spring_boot.values }
+                end
             end
         end
 
