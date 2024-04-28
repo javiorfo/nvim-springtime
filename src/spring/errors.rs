@@ -13,6 +13,9 @@ pub enum SpringtimeError {
     Generic(String),
 }
 
+// Error wrapper
+pub type SpringtimeResult<T=()> = Result<T, SpringtimeError>;
+
 impl std::fmt::Display for SpringtimeError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {

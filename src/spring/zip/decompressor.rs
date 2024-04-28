@@ -3,7 +3,7 @@ use std::io::BufReader;
 use std::path::Path;
 use zip::read::ZipArchive;
 
-use crate::spring::{constants::SpringtimeResult, errors::SpringtimeError, lua::logger::Logger::*};
+use crate::spring::{errors::SpringtimeResult, errors::SpringtimeError, lua::logger::Logger::*};
 
 pub fn decompress(file_path: &str, dest_directory: &str) -> SpringtimeResult {
     Debug.log(&format!(

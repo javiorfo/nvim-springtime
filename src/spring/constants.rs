@@ -1,5 +1,3 @@
-use super::errors::SpringtimeError;
-
 // Spring Curl
 pub const SPRING_URL: &str = "https://start.spring.io";
 
@@ -16,6 +14,3 @@ pub const SPRING_BOOT_VERSION_LUAFILE: &str = "spring_boot.lua";
 
 // Spring Boot libraries
 pub const LIBRARIES_LUAFILE: &str = "libraries.lua";
-
-// Error wrapper
-pub type SpringtimeResult<T=()> = Result<T, SpringtimeError>;

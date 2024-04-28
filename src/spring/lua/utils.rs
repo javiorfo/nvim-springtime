@@ -1,6 +1,6 @@
 use nvim_oxi::mlua::{lua, FromLua};
 
-use crate::spring::{constants::SpringtimeResult, errors::SpringtimeError, lua::logger::Logger::*};
+use crate::spring::{errors::SpringtimeResult, errors::SpringtimeError, lua::logger::Logger::*};
 
 pub struct LuaUtils;
 

@@ -1,6 +1,6 @@
 use nvim_oxi::mlua::Table;
 
-use crate::spring::{constants::SpringtimeResult, curl::inputdata::SpringInputData, errors::SpringtimeError};
+use crate::spring::{errors::SpringtimeResult, curl::inputdata::SpringInputData, errors::SpringtimeError};
 
 use super::{logger::Logger::*, utils::{LuaUtils, Module, Variable}};
 

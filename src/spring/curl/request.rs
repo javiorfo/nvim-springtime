@@ -1,7 +1,7 @@
 use crate::spring::{
-    constants::{SpringtimeResult, SPRING_URL},
+    constants::SPRING_URL,
     curl::inputdata::SpringInputData,
-    errors::SpringtimeError,
+    errors::{SpringtimeResult, SpringtimeError},
     lua::{logger::Logger::*, validator::Validator},
     zip::decompressor::decompress,
 };

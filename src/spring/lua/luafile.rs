@@ -1,4 +1,4 @@
-use crate::spring::{constants::*, curl::request::call_to_spring, errors::SpringtimeError};
+use crate::spring::{constants::*, curl::request::call_to_spring, errors::{SpringtimeError, SpringtimeResult}};
 use serde_json::Value;
 use std::{fs::File, io::Write};
 
