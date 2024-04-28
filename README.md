@@ -131,7 +131,7 @@ use {
 **NOTE:** The colorscheme **umbra** from [nvim-nyctophilia](https://github.com/javiorfo/nvim-nyctophilia) is used in this image
 
 
-- By default Spring Boot versions and Java versions are extracted from [Spring Initializr](https://start.spring.io).For instance, if you want to use Spring Boot 2.X and Java 8 among others:
+- By default Spring Boot versions and Java versions are extracted from [Spring Initializr](https://start.spring.io). For instance, if you want to use Spring Boot 2.X and Java 11 among others:
 ```lua
 -- Example lazy.nvim
 opts = {
@@ -171,9 +171,9 @@ opts = {
 
 ## Troubleshooting and recommendations
 #### Springtime update recommendation
-This plugin will download all the Spring libraries names, Java versions and Spring Boot versions used at the time when building. There is no process to update this files daily, so to match always to [Spring Initializr](https://start.spring.io). You can do the following:
+This plugin will download all the Spring libraries names, Java versions and Spring Boot versions used at the time when building. There is no process to update these files daily, so to match always to [Spring Initializr](https://start.spring.io) you can do the following:
 - Execute the command `:SpringtimeUpdate` to update the aforementioned files every time you want.
-- Or delegates this updating process to the package manager. So the upgrade made every time this plugin is loaded. Example in lazy.nvim:
+- Or delegates this updating process to the package manager. So the upgrade is made every time this plugin is loaded. Example in lazy.nvim:
 ```lua
 -- lazy.nvim
 config = {
@@ -182,14 +182,14 @@ config = {
 ```
 
 #### Springtime build problems
-When this plugin is downloaded and installed (with any package manager described above), a build is run from behind. This process builds the Rust source code into a library and executes some bash commands (I takes several seconds).
+When this plugin is downloaded and installed (with any package manager described above), a build is run from behind. This process builds the Rust source code into a library and executes some bash commands (It takes several seconds).
 - If it fails **Springtime** could not be used. So check the logs with the command `:SpringtimeLogs`. Something like this could be found:
 
 ```bash
 [ERROR][04/28/2024 12:53:02]: Unable to find libclang: "couldn't find any valid shared libraries matching: ['libclang.so', 'libclang-*.so', 'libclang.so.*', 'libclang-*.so.*'], set the `LIBCLANG_PATH` environment variable to a path where one of these files can be found (invalid: [])"
 ```
 
-- It means that libclang is not installed (a dependency required by Rust)
+- It means that *libclang* is not installed (a dependency required by Rust)
 - To solve it:
     - Install the library
     - Run the command `:SpringtimeBuild` in Neovim to execute the build again
@@ -197,7 +197,7 @@ When this plugin is downloaded and installed (with any package manager described
     - If an error ocurred again, repeat the steps checking the logs
 
 #### Other problems
-Enable the debug and errors logs to check for any other problems. And please, report it [here](https://github.com/javiorfo/nvim-springtime/issues)
+Enable the debug and errors log to check for any other problems. And please, report it [here](https://github.com/javiorfo/nvim-springtime/issues)
 - Enable logs:
 ```lua
 require'springtime'.setup {
