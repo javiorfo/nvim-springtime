@@ -119,7 +119,7 @@ use {
 
 ## Usage
 - Once **Springtime** is enabled. You can execute the command `:Springtime` to open the popup
-- **Consider:**
+- **Considerations:**
     - *Visual Mode* is disabled.
     - *Insert Mode* is only enable to edit **Project Metadata** and **Dependencies** 
     - To select radio buttons use default **Ctrl + Space** in *Normal mode* (or configure it like opts above)

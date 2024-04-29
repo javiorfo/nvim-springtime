@@ -12,13 +12,245 @@ REFERENCE MANUAL
 CONTENTS                                                       *nvim-springtime*
 
     1. Introduction ............. |springtime-introduction|
-    2. Usage .................... |springtime-usage|
+    2. Installation ............. |springtime-installation|
+    3. Usage .................... |springtime-usage|
+     3.1 Quickstart ............. |springtime-quickstart|
+     3.2 Customization .......... |springtime-customization|
+    4. Commands ................. |springtime-commands|
+    5. Update ................... |springtime-update|
+    6. Troubleshooting .......... |springtime-troubleshooting|
+     6.1 Build Problems ......... |springtime-build-problems|
+     6.2 Other Problems ......... |springtime-other-problems|
 
 ================================================================================
 1. INTRODUCTION                                        *springtime-introduction*
 
+This is a nvim plugin that works as a Spring Initializr wrapper. Nonetheless, It
+has more options and is more flexible than the aforementioned.
 
 ================================================================================
-2. USAGE                                                      *springtime-usage*
+2. INSTALLATION                                        *springtime-installation*
+
+Using 'packer': >
+    use {
+        'javiorfo/nvim-springtime',
+        requires = {
+            "javiorfo/nvim-popcorn",
+            "javiorfo/nvim-spinetta",
+            "hrsh7th/nvim-cmp"
+        },
+        run = function()
+            require'springtime.core'.build()
+        end,
+    }
+<
+
+Using 'Lazy.nvim': >
+    { 
+        'javiorfo/nvim-springtime',
+        lazy = true,
+        cmd = { "Springtime", "SpringtimeUpdate", "SpringtimeBuild" },
+        dependencies = {
+            "javiorfo/nvim-popcorn",
+            "javiorfo/nvim-spinetta",
+            "hrsh7th/nvim-cmp"
+        },
+        build = function()
+            require'springtime.core'.build()
+        end,
+        opts = {
+            -- This section is optional
+            -- If you want to change default configurations
+            -- In packer.nvim use require'springtime'.setup { ... }
+            
+            -- Springtime popup section
+            spring = {
+                -- Project: Gradle, Gradle Kotlin and Maven (Gradle default)
+                project = {
+                    selected = 1
+                },
+                -- Language: Java, Kotlin and Groovy (Java default)
+                language = {
+                    selected = 1
+                },
+                -- Packaging: Jar and War (Jar default)
+                packaging = {
+                    selected = 1
+                },
+                -- Project Metadata defaults:
+                -- Change the default values as you like
+                -- This can also be edited in the popup
+                project_metadata = {
+                    group = "com.example",
+                    artifact = "demo",
+                    name = "demo",
+                    package_name = "com.example.demo",
+                    version = "0.0.1-SNAPSHOT"
+                }
+            },
+
+            -- Some popup options
+            dialog = {
+                -- The keymap used to select radio buttons (normal mode)
+                selection_keymap = "<C-Space>",
+
+                -- The keymap used to generate the Spring project (normal mode)
+                generate_keymap = "<C-CR>",
+
+                -- If you want confirmation before generate the Spring project
+                confirmation = true,
+
+                -- Highlight links to Title and sections for changing colors
+                style = {
+                    title_link = "Boolean",
+                    section_link = "Type"
+                }
+            },
+
+            -- Workspace is where the generated Spring project will be saved
+            workspace = {
+                -- Default where Neovim is open
+                path = vim.fn.expand("%:p:h"),
+                
+                -- Spring Initializr generates a zip file
+                -- Decompress the file by default
+                decompress = true,
+
+                -- If after generation you want to open the folder
+                -- Opens the generated project in Neovim by default
+                open_auto = true
+            },
+
+            -- This could be enabled for debugging purposes
+            -- Generates a springtime.log with debug and errors.
+            internal = {
+                log_debug = false
+            }
+        }
+    }
+<
+
+================================================================================
+3. USAGE                                                      *springtime-usage*
+
+This section will cover different ways to use this plugin.
+
+--------------------------------------------------------------------------------
+3.1 QUICKSTART                                           *springtime-quickstart*
+
+Once 'Springtime' is enabled. You can execute the command ':Springtime' to open 
+the popup
+Considerations:
+    - Visual Mode is disabled.
+    - Insert Mode is only enable to edit Project Metadata and Dependencies 
+    - To select radio buttons use default <C-Space> in Normal mode (or configure 
+    it like opts above)
+    - To generate a project use default <C-CR> in Normal mode (or configure it 
+    like opts above)
+    - Dependencies has autocomplete libraries
+
+================================================================================
+3.2 CUSTOMIZATION                                     *springtime-customization*
+
+By default Spring Boot versions and Java versions are extracted from Spring 
+Initializr. For instance, if you want to use Spring Boot 2.X and Java 11 among 
+others: >
+    -- Example lazy.nvim
+    opts = {
+        spring = {
+            spring_boot = {
+                selected = 3,
+                values = {
+                    "3.2.5",
+                    "3.1.11",
+                    "2.7.18"
+                }
+            },
+            java_version = {
+                selected = 2,
+                values = { 17, 11, 8 }
+            }
+        }
+    }
+<
+
+================================================================================
+4. COMMANDS                                                *springtime-commands*
+
+These are the list of commands in nvim-springtime:
+    - ':Springtime' -> This command will open Springtime
+    - ':SpringtimeBuild' -> This command will build Rust code with cargo and 
+    update the plugin (executing :SpringtimeUpdate inside)
+    - ':SpringtimeLogs' -> This command will open a buffer with the generated 
+    plugin logs
+    - ':SpringtimeUpdate' -> This command will update the libraries and Spring 
+    settings
+
+================================================================================
+5. UPDATE                                                    *springtime-update*
+
+This plugin will download all the Spring libraries names, Java versions and 
+Spring Boot versions used at the time when building. There is no process to 
+update these files daily, so to match always to Spring Initializr 
+(https://start.spring.io) you can do the following:
+
+- Execute the command ':SpringtimeUpdate' to update the aforementioned files 
+every time you want.
+- Or delegates this updating process to the package manager. So the upgrade is 
+made every time this plugin is loaded. Example in lazy.nvim: >
+    -- lazy.nvim
+    config = {
+        require'springtime.core'.update()
+    }
+<
+
+================================================================================
+6. TROUBLESHOOTING                                   *springtime-toubleshooting*
+
+This section will cover different ways to solve problems and bugs.
+
+--------------------------------------------------------------------------------
+6.1 BUILD PROBLEMS                                   *springtime-build-problems*
+
+When this plugin is downloaded and installed (with any package manager described 
+above), a build is run from behind. This process builds the Rust source code 
+into a library and executes some bash commands (It takes several seconds).
+
+- If it fails 'Springtime' could not be used. So check the logs with the command 
+':SpringtimeLogs'. Something like this could be found: >
+
+    [ERROR][04/28/2024 12:53:02]: Unable to find libclang: "couldn't find any 
+    valid shared libraries matching: ['libclang.so', 'libclang-*.so', 
+    'libclang.so.*', 'libclang-*.so.*'], set the `LIBCLANG_PATH` environment 
+    variable to a path where one of these files can be found (invalid: [])"
+<
+
+- It means that 'libclang' is not installed (a dependency required by Rust)
+- To solve it:
+    - Install the library
+    - Run the command `:SpringtimeBuild` in Neovim to execute the build again
+    - Wait for the process to finish correctly
+    - If an error ocurred again, repeat the steps checking the logs
+
+
+================================================================================
+6.2 OTHER PROBLEMS                                   *springtime-other-problems*
+
+Enable the debug and errors log to check for any other problems. And please, 
+report it here: https://github.com/javiorfo/nvim-springtime/issues
+- Enable logs: >
+    require'springtime'.setup {
+        internal = {
+            log_debug = true
+        }
+    }
+
+    -- OR in lazy.nvim
+    opts = {
+        internal = {
+            log_debug = true
+        }
+    }
+<
 
 ================================================================================
