@@ -11,3 +11,5 @@ fi
 cp $ROOT/target/release/libspringtime_rs.so $ROOT
 mv $ROOT/libspringtime_rs.so $ROOT/springtime_rs.so
 mv $ROOT/springtime_rs.so $ROOT/lua/
+
+(cd $ROOT && cargo clean)
