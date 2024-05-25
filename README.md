@@ -3,7 +3,7 @@
 *Neovim plugin based on [Spring Initializr](https://start.spring.io) written in Lua*
 
 ## Caveats
-- This dependencies must be installed required by this plugin, like: `curl`, `jq`, `unzip`. 
+- These dependencies are required to be installed: `curl`, `jq`, `unzip`. 
 - Old Spring Boot and Java versions could be used in this plugin unlike [Spring Initializr](https://start.spring.io).
 - Default selected values could be changed by the user.
 - Dependencies with autocomplete libraries.
