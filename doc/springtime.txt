@@ -19,8 +19,7 @@ CONTENTS                                                       *nvim-springtime*
     4. Commands ................. |springtime-commands|
     5. Update ................... |springtime-update|
     6. Troubleshooting .......... |springtime-troubleshooting|
-     6.1 Build Problems ......... |springtime-build-problems|
-     6.2 Other Problems ......... |springtime-other-problems|
+     6.1 Problems ............... |springtime-problems|
 
 ================================================================================
 1. INTRODUCTION                                        *springtime-introduction*
@@ -40,7 +39,7 @@ Using 'packer': >
             "hrsh7th/nvim-cmp"
         },
         run = function()
-            require'springtime.core'.build()
+            require'springtime.core'.update()
         end,
     }
 <
@@ -49,14 +48,14 @@ Using 'Lazy.nvim': >
     { 
         'javiorfo/nvim-springtime',
         lazy = true,
-        cmd = { "Springtime", "SpringtimeUpdate", "SpringtimeBuild" },
+        cmd = { "Springtime", "SpringtimeUpdate" },
         dependencies = {
             "javiorfo/nvim-popcorn",
             "javiorfo/nvim-spinetta",
             "hrsh7th/nvim-cmp"
         },
         build = function()
-            require'springtime.core'.build()
+            require'springtime.core'.update()
         end,
         opts = {
             -- This section is optional
@@ -179,8 +178,6 @@ others: >
 
 These are the list of commands in nvim-springtime:
     - ':Springtime' -> This command will open Springtime
-    - ':SpringtimeBuild' -> This command will build Rust code with cargo and 
-    update the plugin (executing :SpringtimeUpdate inside)
     - ':SpringtimeLogs' -> This command will open a buffer with the generated 
     plugin logs
     - ':SpringtimeUpdate' -> This command will update the libraries and Spring 
@@ -210,32 +207,9 @@ made every time this plugin is loaded. Example in lazy.nvim: >
 This section will cover different ways to solve problems and bugs.
 
 --------------------------------------------------------------------------------
-6.1 BUILD PROBLEMS                                   *springtime-build-problems*
+6.1 PROBLEMS                                               *springtime-problems*
 
-When this plugin is downloaded and installed (with any package manager described 
-above), a build is run from behind. This process builds the Rust source code 
-into a library and executes some bash commands (It takes several seconds).
-
-- If it fails 'Springtime' could not be used. So check the logs with the command 
-':SpringtimeLogs'. Something like this could be found: >
-
-    [ERROR][04/28/2024 12:53:02]: Unable to find libclang: "couldn't find any 
-    valid shared libraries matching: ['libclang.so', 'libclang-*.so', 
-    'libclang.so.*', 'libclang-*.so.*'], set the `LIBCLANG_PATH` environment 
-    variable to a path where one of these files can be found (invalid: [])"
-<
-
-- It means that 'libclang' is not installed (a dependency required by Rust)
-- To solve it:
-    - Install the library
-    - Run the command `:SpringtimeBuild` in Neovim to execute the build again
-    - Wait for the process to finish correctly
-    - If an error ocurred again, repeat the steps checking the logs
-
-
-================================================================================
-6.2 OTHER PROBLEMS                                   *springtime-other-problems*
-
+Check the logs with the command ':SpringtimeLogs'. 
 Enable the debug and errors log to check for any other problems. And please, 
 report it here: https://github.com/javiorfo/nvim-springtime/issues
 - Enable logs: >

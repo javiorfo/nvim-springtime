@@ -14,11 +14,6 @@ vim.api.nvim_create_user_command('SpringtimeUpdate', function()
     require("springtime.core").update()
 end, {})
 
--- Build and update luafiles
-vim.api.nvim_create_user_command('SpringtimeBuild', function()
-    require("springtime.core").build()
-end, {})
-
 -- Show log files
 vim.api.nvim_create_user_command('SpringtimeLogs', function()
     require("springtime.core").show_logs()

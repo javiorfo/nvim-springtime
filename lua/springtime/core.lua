@@ -1,5 +1,6 @@
 local SETTINGS = require 'springtime'.SETTINGS
 local constants = require 'springtime.constants'
+local generator = require 'springtime.generator'
 local spinetta = require 'spinetta'
 local util = require 'springtime.util'
 
@@ -123,16 +124,6 @@ function M.create_content()
     return content
 end
 
-local function project_to_id(value)
-    if value == constants.GRADLE_GROOVY then
-        return "gradle-project"
-    end
-    if value == constants.GRADLE_KOTLIN then
-        return "gradle-project-kotlin"
-    end
-    return "maven-project"
-end
-
 function M.generate(values)
     local user_input = "y"
     if SETTINGS.dialog.confirmation then
@@ -143,108 +134,43 @@ function M.generate(values)
         vim.cmd [[redraw]]
         util.logger:debug("Values to generate project: " .. vim.inspect(values))
 
-        local input = {
-            project = project_to_id(values[1]),
-            language = tostring(values[2]):lower(),
-            packaging = tostring(values[3]):lower(),
-            spring_boot = values[4],
-            java_version = values[5],
-            project_group = util.trim(values[6]),
-            project_artifact = util.trim(values[7]),
-            project_name = util.trim(values[8]),
-            project_package_name = util.trim(values[9]),
-            project_version = SETTINGS.spring.project_metadata.version,
-            dependencies = values[10],
-            workspace = SETTINGS.workspace.path,
-            decompress = SETTINGS.workspace.decompress,
-        }
-
-        local rust_module = util.dinamcally_get_rust_module()
-
-        if not rust_module then
-            util.logger:error("  Internal error. Check the logs")
-            util.logger:debug("Could not load springtime_rs.so to execute update")
-            return
-        end
-
-        local ok, message = rust_module.create_project(input)
+        local ok = generator.create_project(values)
         if ok then
-            util.logger:info(message)
+            util.logger:info(string.format("  [%s] generated correctly in workspace [%s]", util.trim(values[8]), SETTINGS.workspace.path))
             if SETTINGS.workspace.open_auto then
-                vim.cmd(string.format("e %s/%s", SETTINGS.workspace.path, input.project_name))
+                vim.cmd(string.format("e %s/%s", SETTINGS.workspace.path, util.trim(values[8])))
             end
         else
-            util.logger:error(message)
+            util.logger:error("  Error generating project. Check the logs with :SpringtimeLogs command")
         end
     else
         vim.cmd [[redraw]]
     end
 end
 
-function M.build()
-    local root_path = util.lua_springtime_path:gsub("/lua/springtime", "")
-    local script = string.format(
-    "%sinstall.sh %s 2> >( while read line; do echo \"[ERROR][$(date '+%%m/%%d/%%Y %%T')]: ${line}\"; done >> %s)", root_path,
-        root_path, util.springtime_log_file)
-    local is_ok = false
-    local spinner = spinetta:new {
-        main_msg = "  Springtime   ",
-        spinner = util.spinner,
-        speed_ms = 8000,
-        on_success = function()
-            if is_ok then
-                M.update()
-            else
-                util.logger:error("  An error ocurred during building. Check the Logs for further information.")
-            end
-        end,
-        on_interrupted = function()
-            vim.cmd("redraw")
-            local msg = "Call interrupted!"
-            util.logger:info(msg)
-        end
-    }
-
-    local function job_to_run(job_string)
-        local pid = vim.fn.jobpid(vim.fn.jobstart(job_string, {
-            on_exit = function(_, status)
-                if status == 0 then
-                    is_ok = true
-                end
-            end
-        }))
-        return spinetta.break_when_pid_is_complete(pid)
+function M.update()
+    if not util.check_plugin_dependencies() then
+        return
     end
 
-    spinner:start(job_to_run(script))
-end
-
-function M.update()
+    local root_path = util.lua_springtime_path:gsub("/lua/springtime", "")
+    local script = string.format(
+    "%sscript/build.sh %s 2> >( while read line; do echo \"[ERROR][$(date '+%%m/%%d/%%Y %%T')]: ${line}\"; done >> %s)",
+        root_path, util.lua_springtime_path, util.springtime_log_file)
     local spinner = spinetta:new {
-        main_msg = "  Springtime   Updating from https://start.spring.io ",
+        main_msg = "  Springtime   Updating plugin... ",
+        speed_ms = 100,
         on_success = function()
-            local rust_module = util.dinamcally_get_rust_module()
-
-            if not rust_module then
-                util.logger:error("  Internal error. Check the logs")
-                util.logger:debug("Could not load springtime_rs.so to execute update")
-               return
-            end
-
-            if rust_module.update() == 0 then
-                util.logger:info("  Springtime is ready to be used!")
-            else
-                util.logger:error("  An error ocurred during update. Check the Logs for further information.")
-            end
+            util.logger:info("  Springtime is ready to be used!")
         end,
         on_interrupted = function()
             vim.cmd("redraw")
-            local msg = "Call interrupted!"
+            local msg = "Process interrupted!"
             util.logger:info(msg)
         end
     }
 
-    spinner:start(spinetta.job_to_run("sleep 1"))
+    spinner:start(spinetta.job_to_run(script))
 end
 
 function M.show_logs()
@@ -252,13 +178,15 @@ function M.show_logs()
 end
 
 function M.open()
-    if not util.check_if_file_exists('java_version.lua') or not util.check_if_file_exists('spring_boot.lua')
-        or not util.check_if_file_exists('springtime_rs.so', util.lua_springtime_path:gsub("/springtime", "")) then
-        util.logger:warn(":SpringtimeBuild must be executed to build this plugin before using it.")
+    if not util.check_if_file_exists('java_version.lua') or not util.check_if_file_exists('spring_boot.lua') then
+        util.logger:warn(":SpringtimeUpdate must be executed before using this plugin.")
         return
-    else
-        require'springtime.ui'.open()
     end
+
+    if not util.check_plugin_dependencies() then
+        return
+    end
+    require'springtime.ui'.open()
 end
 
 return M

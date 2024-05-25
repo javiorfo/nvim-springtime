@@ -5,7 +5,3 @@ lua/springtime/spring_boot.lua
 
 # docs
 tags
-
-# Rust
-/target
-*.so
