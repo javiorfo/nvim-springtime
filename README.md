@@ -18,6 +18,7 @@
 ```lua
 use {
     'javiorfo/nvim-springtime',
+    branch = "bash",
     requires = {
         "javiorfo/nvim-popcorn",
         "javiorfo/nvim-spinetta",
@@ -35,6 +36,7 @@ use {
     'javiorfo/nvim-springtime',
     lazy = true,
     cmd = { "Springtime", "SpringtimeUpdate" },
+    branch = "bash",
     dependencies = {
         "javiorfo/nvim-popcorn",
         "javiorfo/nvim-spinetta",
