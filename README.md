@@ -1,14 +1,16 @@
 # nvim-springtime
 ### A blazingly fast and custimizable Spring project creator
-*Neovim plugin based on [Spring Initializr](https://start.spring.io) written in Lua*
+*Neovim plugin based on [Spring Initializr](https://start.spring.io) written in Lua and Rust*
 
 ## Caveats
-- These dependencies are required to be installed: `curl`, `jq`, `unzip`. 
+- This plugin is made in Lua and Rust. So [Rust & Cargo](https://www.rust-lang.org/) must be installed.
+- Extra dependencies must be installed required by rust crates, like: `libcurl, libclang, cmake`. 
 - Old Spring Boot and Java versions could be used in this plugin unlike [Spring Initializr](https://start.spring.io).
 - Default selected values could be changed by the user.
 - Dependencies with autocomplete libraries.
 - This plugin has been developed on and for `Linux` following open source philosophy.
-- Initially this plugin was made in Rust [here](https://github.com/javiorfo/nvim-springtime/tree/rust), but for simplicity it was migrated to Lua and Bash
+- There is a minimal bash version (without Rust) [here](https://github.com/javiorfo/nvim-springtime/tree/bash), with the same functionality 
+
 
 <img src="https://github.com/javiorfo/img/blob/master/nvim-springtime/springtime.png?raw=true" alt="springtime" />
 
@@ -24,7 +26,7 @@ use {
         "hrsh7th/nvim-cmp"
     },
     run = function()
-        require'springtime.core'.update()
+        require'springtime.core'.build()
     end,
 }
 ```
@@ -34,14 +36,14 @@ use {
 { 
     'javiorfo/nvim-springtime',
     lazy = true,
-    cmd = { "Springtime", "SpringtimeUpdate" },
+    cmd = { "Springtime", "SpringtimeUpdate", "SpringtimeBuild" },
     dependencies = {
         "javiorfo/nvim-popcorn",
         "javiorfo/nvim-spinetta",
         "hrsh7th/nvim-cmp"
     },
     build = function()
-        require'springtime.core'.update()
+        require'springtime.core'.build()
     end,
     opts = {
         -- This section is optional
@@ -163,6 +165,7 @@ opts = {
 | Command | Description                       |
 | -------------- | --------------------------------- |
 | `:Springtime`  | This command will open Springtime |
+| `:SpringtimeBuild` | This command will build Rust code with cargo and update the plugin (executing :SpringtimeUpdate inside) |
 | `:SpringtimeLogs`   | This command will open a buffer with the generated plugin logs |
 | `:SpringtimeUpdate` | This command will update the libraries and Spring settings |
 
@@ -179,9 +182,23 @@ config = {
 }
 ```
 
-#### Springtime problems
-- Check the logs with the command ':SpringtimeLogs'. 
-- Enable the debug and errors log to check for any other problems. And please, report it [here](https://github.com/javiorfo/nvim-springtime/issues)
+#### Springtime build problems
+When this plugin is downloaded and installed (with any package manager described above), a build is run from behind. This process builds the Rust source code into a library and executes some bash commands (It takes several seconds).
+- If it fails **Springtime** could not be used. So check the logs with the command `:SpringtimeLogs`. Something like this could be found:
+
+```bash
+[ERROR][04/28/2024 12:53:02]: Unable to find libclang: "couldn't find any valid shared libraries matching: ['libclang.so', 'libclang-*.so', 'libclang.so.*', 'libclang-*.so.*'], set the `LIBCLANG_PATH` environment variable to a path where one of these files can be found (invalid: [])"
+```
+
+- It means that *libclang* is not installed (a dependency required by Rust)
+- To solve it:
+    - Install the library
+    - Run the command `:SpringtimeBuild` in Neovim to execute the build again
+    - Wait for the process to finish correctly
+    - If an error ocurred again, repeat the steps checking the logs
+
+#### Other problems
+Enable the debug and errors log to check for any other problems. And please, report it [here](https://github.com/javiorfo/nvim-springtime/issues)
 - Enable logs:
 ```lua
 require'springtime'.setup {
