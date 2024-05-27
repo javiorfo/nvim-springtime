@@ -190,7 +190,7 @@ function M.build()
     local spinner = spinetta:new {
         main_msg = "  Springtime   ",
         spinner = util.spinner,
-        speed_ms = 8000,
+        speed_ms = 1000,
         on_success = function()
             if is_ok then
                 M.update()

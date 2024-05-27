@@ -35,14 +35,18 @@ end
 
 local msg = 'Building plugin (could take several seconds). Do not interrupt this process...'
 M.spinner = {
-    '󰪞  ' .. msg,
-    '󰪟  ' .. msg,
-    '󰪠  ' .. msg,
-    '󰪡  ' .. msg,
-    '󰪢  ' .. msg,
-    '󰪣  ' .. msg,
-    '󰪤  ' .. msg,
-    '󰪥  ' .. msg,
+    '󱑖 ' .. msg,
+    '󱑋 ' .. msg,
+    '󱑌 ' .. msg,
+    '󱑍 ' .. msg,
+    '󱑎 ' .. msg,
+    '󱑏 ' .. msg,
+    '󱑐 ' .. msg,
+    '󱑑 ' .. msg,
+    '󱑒 ' .. msg,
+    '󱑓 ' .. msg,
+    '󱑔 ' .. msg,
+    '󱑕 ' .. msg,
 }
 
 return M
