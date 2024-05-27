@@ -34,6 +34,7 @@ has more options and is more flexible than the aforementioned.
 Using 'packer': >
     use {
         'javiorfo/nvim-springtime',
+        branch = 'rust',
         requires = {
             "javiorfo/nvim-popcorn",
             "javiorfo/nvim-spinetta",
@@ -49,6 +50,7 @@ Using 'Lazy.nvim': >
     { 
         'javiorfo/nvim-springtime',
         lazy = true,
+        branch = 'rust',
         cmd = { "Springtime", "SpringtimeUpdate", "SpringtimeBuild" },
         dependencies = {
             "javiorfo/nvim-popcorn",
