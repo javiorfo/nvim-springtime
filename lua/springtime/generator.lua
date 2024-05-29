@@ -23,6 +23,9 @@ local function split(str)
             table.insert(result, match)
         end
     end
+
+    util.logger:debug('split dependencies: ' .. result)
+
     return result
 end
 
@@ -35,6 +38,7 @@ local function validate_dependencies(dependencies)
         for _, library in ipairs(libraries) do
             if library.insertText:sub(1, -2) == v then
                 is_valid = true
+                util.logger:debug("Library: " .. library.label .. " Version range: " .. library.versionRange)
                 break
             end
         end

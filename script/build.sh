@@ -8,7 +8,7 @@ spring_url="https://start.spring.io"
 
 # LIBRARIES
 echo "return {" > $dest_lib 
-curl -H 'Accept: application/json' $spring_url | jq -r '.dependencies.values[].values[] | "\t{ label = \"" + .name + "\", insertText = \"" + .id + ",\" },"' >> $dest_lib
+curl -H 'Accept: application/json' $spring_url | jq -r '.dependencies.values[].values[] | "\t{ label = \"" + .name + "\", insertText = \"" + .id + ",\", versionRange = \"" + .versionRange + "\" },"' >> $dest_lib
 echo "}" >> $dest_lib
 
 # SPRING BOOT VERSION
