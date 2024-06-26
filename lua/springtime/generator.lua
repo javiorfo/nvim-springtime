@@ -24,7 +24,8 @@ local function split(str)
         end
     end
 
-    util.logger:debug('split dependencies: ' .. result)
+    local log = vim.inspect(result) or 'NONE'
+    util.logger:debug('split dependencies: ' .. log)
 
     return result
 end
