@@ -110,6 +110,7 @@ function M.create_project(values)
     end
 
     if input.dependencies ~= "" then
+        input.dependencies, _ = string.gsub(input.dependencies, " ", "")
         local is_valid, msg = validate_dependencies(input.dependencies)
         if is_valid then
             input.dependencies = util.remove_trailing_comma(util.trim(input.dependencies))
