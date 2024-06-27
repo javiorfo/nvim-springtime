@@ -69,21 +69,21 @@ end
 function M.create_content()
     local style = SETTINGS.dialog.style.section_link
     local content = {
-        { constants.PROJECT_SECTION,                                                                                                style },
+        { constants.PROJECT_SECTION, style },
         { (SETTINGS.spring.project.selected == 1 and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. constants.GRADLE_GROOVY },
         { (SETTINGS.spring.project.selected == 2 and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. constants.GRADLE_KOTLIN },
         { (SETTINGS.spring.project.selected == 3 and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. constants.MAVEN },
         { "" },
-        { constants.LANGUAGE_SECTION,                                                                                               style },
+        { constants.LANGUAGE_SECTION, style },
         { (SETTINGS.spring.language.selected == 1 and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. constants.JAVA },
         { (SETTINGS.spring.language.selected == 2 and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. constants.KOTLIN },
         { (SETTINGS.spring.language.selected == 3 and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. constants.GROOVY },
         { "" },
-        { constants.PACKAGING_SECTION,                                                                                              style },
+        { constants.PACKAGING_SECTION, style },
         { (SETTINGS.spring.packaging.selected == 1 and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. constants.JAR },
         { (SETTINGS.spring.packaging.selected == 2 and constants.CHECKED_ICON or constants.UNCHECKED_ICON) .. constants.WAR },
         { "" },
-        { constants.SPRING_BOOT_SECTION,                                                                                            style }
+        { constants.SPRING_BOOT_SECTION, style }
     }
 
     local spring_boot = create_dynamic_section("spring_boot")
