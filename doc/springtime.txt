@@ -32,10 +32,10 @@ has more options and is more flexible than the aforementioned.
 
 Using 'packer': >
     use {
-        'javiorfo/nvim-springtime',
+        'chaosystema/nvim-springtime',
         requires = {
-            "javiorfo/nvim-popcorn",
-            "javiorfo/nvim-spinetta",
+            "chaosystema/nvim-popcorn",
+            "chaosystema/nvim-spinetta",
             "hrsh7th/nvim-cmp"
         },
         run = function()
@@ -46,12 +46,12 @@ Using 'packer': >
 
 Using 'Lazy.nvim': >
     { 
-        'javiorfo/nvim-springtime',
+        'chaosystema/nvim-springtime',
         lazy = true,
         cmd = { "Springtime", "SpringtimeUpdate" },
         dependencies = {
-            "javiorfo/nvim-popcorn",
-            "javiorfo/nvim-spinetta",
+            "chaosystema/nvim-popcorn",
+            "chaosystema/nvim-spinetta",
             "hrsh7th/nvim-cmp"
         },
         build = function()
@@ -211,7 +211,7 @@ This section will cover different ways to solve problems and bugs.
 
 Check the logs with the command ':SpringtimeLogs'. 
 Enable the debug and errors log to check for any other problems. And please, 
-report it here: https://github.com/javiorfo/nvim-springtime/issues
+report it here: https://github.com/chaosystema/nvim-springtime/issues
 - Enable logs: >
     require'springtime'.setup {
         internal = {
