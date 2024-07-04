@@ -8,19 +8,19 @@
 - Default selected values could be changed by the user.
 - Dependencies with autocomplete libraries.
 - This plugin has been developed on and for `Linux` following open source philosophy.
-- Initially this plugin was made in Rust [here](https://github.com/chaosystema/nvim-springtime/tree/rust), but for simplicity it was migrated to Lua and Bash
+- Initially this plugin was made in Rust [here](https://github.com/javiorfo/nvim-springtime/tree/rust), but for simplicity it was migrated to Lua and Bash
 
-<img src="https://github.com/chaosystema/img/blob/master/nvim-springtime/springtime.png?raw=true" alt="springtime" />
+<img src="https://github.com/javiorfo/img/blob/master/nvim-springtime/springtime.png?raw=true" alt="springtime" />
 
 
 ## Installation
 `Packer`
 ```lua
 use {
-    'chaosystema/nvim-springtime',
+    'javiorfo/nvim-springtime',
     requires = {
-        "chaosystema/nvim-popcorn",
-        "chaosystema/nvim-spinetta",
+        "javiorfo/nvim-popcorn",
+        "javiorfo/nvim-spinetta",
         "hrsh7th/nvim-cmp"
     },
     run = function()
@@ -32,12 +32,12 @@ use {
 `Lazy`
 ```lua
 { 
-    'chaosystema/nvim-springtime',
+    'javiorfo/nvim-springtime',
     lazy = true,
     cmd = { "Springtime", "SpringtimeUpdate" },
     dependencies = {
-        "chaosystema/nvim-popcorn",
-        "chaosystema/nvim-spinetta",
+        "javiorfo/nvim-popcorn",
+        "javiorfo/nvim-spinetta",
         "hrsh7th/nvim-cmp"
     },
     build = function()
@@ -125,9 +125,9 @@ use {
     - To generate a project use default **Ctrl + CR** in *Normal mode* (or configure it like opts above)
     - **Dependencies** has autocomplete libraries
 
-<img src="https://github.com/chaosystema/img/blob/master/nvim-springtime/springtime.gif?raw=true" alt="springtime" />
+<img src="https://github.com/javiorfo/img/blob/master/nvim-springtime/springtime.gif?raw=true" alt="springtime" />
 
-**NOTE:** The colorscheme **umbra** from [nvim-nyctophilia](https://github.com/chaosystema/nvim-nyctophilia) is used in this image
+**NOTE:** The colorscheme **umbra** from [nvim-nyctophilia](https://github.com/javiorfo/nvim-nyctophilia) is used in this image
 
 
 - By default Spring Boot versions and Java versions are extracted from [Spring Initializr](https://start.spring.io). For instance, if you want to use Spring Boot 2.X and Java 11 among others:
@@ -153,9 +153,9 @@ opts = {
 
 - You would get this:
 
-<img src="https://github.com/chaosystema/img/blob/master/nvim-springtime/springtime2.png?raw=true" alt="springtime2" />
+<img src="https://github.com/javiorfo/img/blob/master/nvim-springtime/springtime2.png?raw=true" alt="springtime2" />
 
-**NOTE:** The colorscheme **umbra** from [nvim-nyctophilia](https://github.com/chaosystema/nvim-nyctophilia) is used in this image
+**NOTE:** The colorscheme **umbra** from [nvim-nyctophilia](https://github.com/javiorfo/nvim-nyctophilia) is used in this image
 
 
 
@@ -181,7 +181,7 @@ config = {
 
 #### Springtime problems
 - Check the logs with the command ':SpringtimeLogs'. 
-- Enable the debug and errors log to check for any other problems. And please, report it [here](https://github.com/chaosystema/nvim-springtime/issues)
+- Enable the debug and errors log to check for any other problems. And please, report it [here](https://github.com/javiorfo/nvim-springtime/issues)
 - Enable logs:
 ```lua
 require'springtime'.setup {
@@ -202,4 +202,5 @@ opts = {
 
 
 ### Donate
-- **Bitcoin** [(QR)](https://raw.githubusercontent.com/chaosystema/img/master/crypto/bitcoin.png)  `1GqdJ63RDPE4eJKujHi166FAyigvHu5R7v`
+- **Bitcoin** [(QR)](https://raw.githubusercontent.com/javiorfo/img/master/crypto/bitcoin.png)  `1GqdJ63RDPE4eJKujHi166FAyigvHu5R7v`
+- [Paypal](https://www.paypal.com/donate/?hosted_button_id=FA7SGLSCT2H8G)
