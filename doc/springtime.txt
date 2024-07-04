@@ -32,10 +32,10 @@ has more options and is more flexible than the aforementioned.
 
 Using 'packer': >
     use {
-        'chaosystema/nvim-springtime',
+        'javiorfo/nvim-springtime',
         requires = {
-            "chaosystema/nvim-popcorn",
-            "chaosystema/nvim-spinetta",
+            "javiorfo/nvim-popcorn",
+            "javiorfo/nvim-spinetta",
             "hrsh7th/nvim-cmp"
         },
         run = function()
@@ -46,12 +46,12 @@ Using 'packer': >
 
 Using 'Lazy.nvim': >
     { 
-        'chaosystema/nvim-springtime',
+        'javiorfo/nvim-springtime',
         lazy = true,
         cmd = { "Springtime", "SpringtimeUpdate" },
         dependencies = {
-            "chaosystema/nvim-popcorn",
-            "chaosystema/nvim-spinetta",
+            "javiorfo/nvim-popcorn",
+            "javiorfo/nvim-spinetta",
             "hrsh7th/nvim-cmp"
         },
         build = function()
