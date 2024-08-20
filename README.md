@@ -1,5 +1,4 @@
 # nvim-springtime
-### A blazingly fast and custimizable Spring project creator
 *Neovim plugin based on [Spring Initializr](https://start.spring.io) written in Lua*
 
 ## Caveats
