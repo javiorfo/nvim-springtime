@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/env/bin bash
 
 current_dir=$1
 dest_lib="$current_dir/libraries.lua"
